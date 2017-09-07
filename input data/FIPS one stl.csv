@@ -1,0 +1,22 @@
+city,county,state,display_name,FIPS,current,baseline
+Grand Rapids,Kent,MI,GR,26081,1,0
+St. Louis,St. Louis both city and county,MO,STL,MERGED,1,0
+Oklahoma City,Oklahoma,OK,OKC,40109,1,0
+Tulsa,Tulsa,OK,TUL,40143,1,0
+Greenville,Greenville,SC,GVL,45045,1,0
+Knoxville,Knox,TN,KNO,47093,1,0
+Birmingham,Jefferson,AL,BIR,1073,1,1
+Indianapolis,Marion,IN,IND,18097,1,1
+Louisville,Jefferson,KY,LOU,21111,1,1
+Kansas City,Jackson,MO,KC,29095,1,1
+Omaha,Douglas,NE,OMA,31055,1,1
+Greensboro,Guilford,NC,GBR,37081,1,1
+Charlotte,Mecklenberg,NC,CHA,37119,1,1
+Columbus,Franklin,OH,COL,39049,1,1
+Cincinnati,Hamilton,OH,CIN,39061,1,1
+Nashville,Davidson,TN,NAS,47037,1,1
+Memphis,Shelby,TN,MEM,47157,1,1
+Jacksonville,Duval,FL,JAC,12031,0,1
+Raleigh,Wake,NC,RAL,37183,0,1
+Dayton,Montgomery,OH,DAY,39113,0,1
+Richmond,Richmond City,VA,RIC,51760,0,1

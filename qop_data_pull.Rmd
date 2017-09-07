@@ -1,0 +1,982 @@
+---
+title: "qop_data_pull"
+output: html_notebook
+---
+
+Code for pulling quality of place data
+
+Load libraries
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "~/Desktop/glp_website")
+```
+
+```{r}
+library(showtext)
+library(reshape2)
+library(classInt)
+library(ggthemes)
+library(tidyverse)
+library(magrittr)
+```
+
+Helper functions
+
+**pull_peers_MSA**   
+  adds variables to indicate whether an MSA is an original peer and a current peer
+  *Args:*  
+  - a data frame contianing MSA codes  
+  *Returns:*  
+  - the data frame with new variables: 'baseline' denotes whether an MSA was an original peer and 'current' denotes whether as MSA is a current peer
+
+**pull_peers_FIPS**   
+  adds variables to indicate whether a city is an original peer and a current peer
+  *Args:*  
+  - a data frame contianing county FIPS codes  
+  *Returns:*  
+  - the data frame with new variables: 'baseline' denotes whether a city was an original peer and 'current' denotes whether a city is a current peer
+  
+**cbp_read**
+  reads in CSVs on social support data
+  *Args:*
+  - a folder containing CSV files
+  - the first year of data to begin reading
+  *Returns:*
+  - a data frame containing variables on social supports
+  
+**volunteer_read**
+  Reads and rocesses volunteer data files
+  *Args:*
+  - a path to a CSV of volunteer data
+  *Returns:*
+  - a data frame with identfier variables and the percentage of residents volunteering
+  
+**normZ**
+  Normalizes a vector
+  *Args*
+  - A numeric vector
+  *Returns*
+  - A vector of standard deviations
+  
+**acs_time**   
+  reads a folder of ACS data downloded from American FactFinder into R.  
+  *Args:*  
+  - a folder of ACS data with a separate CSV for each year  
+  - a starting year  
+  *Returns:*  
+  - a data frame subsetted to peer cities
+
+```{r}
+pull_peers_MSA<-function(data){
+  all.peers<-filter(data, data$CBSA == 24340 | data$CBSA == 41180
+                    |data$CBSA == 36420 | data$CBSA == 46140
+                    |data$CBSA == 24860 |data$CBSA == 28940
+                    |data$CBSA == 13820 |data$CBSA == 26900
+                    |data$CBSA == 31140 |data$CBSA == 28140
+                    |data$CBSA == 36540 |data$CBSA == 24660
+                    |data$CBSA == 16740 |data$CBSA == 18140
+                    |data$CBSA == 17140 |data$CBSA == 34980
+                    |data$CBSA == 32820 |data$CBSA == 27260
+                    |data$CBSA == 39580 |data$CBSA == 19380
+                    |data$CBSA == 40060)
+  all.peers$baseline<-1
+  all.peers$current<-1
+  all.peers$baseline[all.peers$CBSA == 24340 | all.peers$CBSA == 41180
+                     |all.peers$CBSA == 36420 | all.peers$CBSA == 46140
+                     |all.peers$CBSA == 24860 | all.peers$CBSA == 28940]<-0
+  all.peers$current[all.peers$CBSA == 27260 | all.peers$CBSA == 39580
+                    |all.peers$CBSA == 19380 | all.peers$CBSA == 40060]<-0
+  all.peers
+}
+
+pull_peers_FIPS <- function(dat){
+  all.peers <- subset(dat, dat$FIPS == 1073 | dat$FIPS == 37119
+                      |dat$FIPS == 39061 |dat$FIPS == 39049
+                      |dat$FIPS == 26081 |dat$FIPS == 37081
+                      |dat$FIPS == 45045 |dat$FIPS == 18097
+                      |dat$FIPS == 29095 |dat$FIPS == 47093
+                      |dat$FIPS == 21111 |dat$FIPS == 47157
+                      |dat$FIPS == 47037 |dat$FIPS == 40109
+                      |dat$FIPS == 31055 |dat$FIPS == 29189
+                      |dat$FIPS == 29510 |dat$FIPS == 40143
+                      |dat$FIPS == 12031 |dat$FIPS == 37183
+                      |dat$FIPS == 39113 |dat$FIPS == 51760
+                      |dat$FIPS == "01073")
+  all.peers$baseline <- 1
+  all.peers$current <- 1
+  all.peers$baseline[all.peers$FIPS==26081|all.peers$FIPS==29189
+                     |all.peers$FIPS==29510|all.peers$FIPS==40109
+                     |all.peers$FIPS==40143|all.peers$FIPS==45045
+                     |all.peers$FIPS==47093]<-0
+  all.peers$current[all.peers$FIPS== 12031|all.peers$FIPS==37183|
+                      all.peers$FIPS==39113|all.peers$FIPS==51760]<-0
+  all.peers
+}
+
+cbp_read<-function(folder, starting_year){
+  initial_wd <- getwd()
+  directory <- paste(initial_wd, folder, sep = "/")
+  file_names<-list.files(directory)
+  n <- length(file_names)
+  y <- starting_year
+  for(i in 1:n){
+    data<-read_csv(paste(directory,file_names[i], sep = "/"), skip = 0, progress = FALSE)
+    data%<>%mutate(FIPS = paste(fipstate, fipscty, sep = ''))
+    all.peers <- filter(data, data$FIPS == "01073" |data$FIPS == 37119
+                        |data$FIPS == 39061 |data$FIPS == 39049
+                        |data$FIPS == 26081 |data$FIPS == 37081
+                        |data$FIPS == 45045 |data$FIPS == 18097
+                        |data$FIPS == 29095 |data$FIPS == 47093
+                        |data$FIPS == 21111 |data$FIPS == 47157
+                        |data$FIPS == 47037 |data$FIPS == 40109
+                        |data$FIPS == 31055 |data$FIPS == 29189
+                        |data$FIPS == 29510
+                        |data$FIPS == 40143 |data$FIPS == 39113
+                        |data$FIPS == 12031 |data$FIPS == 37183
+                        |data$FIPS == 37183 |data$FIPS == 51760)
+    all.peers$year <- y
+    all.peers$baseline <- 1
+    all.peers$current <- 1
+    all.peers$baseline[all.peers$FIPS==26081|all.peers$FIPS==29189
+                       |all.peers$FIPS==29510|all.peers$FIPS==40109
+                       |all.peers$FIPS==40143|all.peers$FIPS==45045
+                       |all.peers$FIPS==47093]<-0
+    all.peers$current[all.peers$FIPS== 12031|all.peers$FIPS==37183|
+                        all.peers$FIPS==39113|all.peers$FIPS==51760]<-0
+    y<-y+1
+    
+    if(i == 1){
+      df <- all.peers
+    }
+    else{
+      names(all.peers)<-names(df)
+      df<-rbind(df, all.peers)
+    }
+  }
+  df
+}
+
+volunteer_read<-function(data){
+  df<-read_csv(data, progress = FALSE)
+  colnames(df)<-c("RANK", "CITY","STATE","volunteer_pct")
+  year = substr(data, 35, 38)
+  df$Year = NA
+  df$Year = as.numeric(year)
+  df%<>%filter(CITY == "Birmingham" | CITY == "Charlotte"|
+                 CITY == "Cincinnati" | CITY == "Columbus" |
+                 CITY == "Greensboro" | CITY == "Grand Rapids" |
+                 CITY == "Greenville" | CITY == "Indianapolis"|
+                 CITY == "Kansas City" | CITY == "Knoxville"|
+                 CITY == "Louisville" | CITY == "Memphis"|
+                 CITY == "Nashville" | CITY == "Oklahoma City"|
+                 CITY == "Omaha" | CITY == "St. Louis"|
+                 CITY == "Tulsa")
+  df$MSA<-NA
+  df$MSA[df$CITY == "Birmingham"] = 13820
+  df$MSA[df$CITY == "Charlotte"] = 16740
+  df$MSA[df$CITY == "Cincinnati"] = 17140
+  df$MSA[df$CITY == "Columbus"] = 18140
+  df$MSA[df$CITY == "Grand Rapids"] = 24340
+  df$MSA[df$CITY == "Greensboro"] = 24660
+  df$MSA[df$CITY == "Greenville"] = 24860
+  df$MSA[df$CITY == "Indianapolis"] = 26900
+  df$MSA[df$CITY == "Kansas City"] = 28140
+  df$MSA[df$CITY == "Knoxville"] = 28940
+  df$MSA[df$CITY == "Louisville"] = 31140
+  df$MSA[df$CITY == "Memphis"] = 32820
+  df$MSA[df$CITY == "Nashville"] = 34980
+  df$MSA[df$CITY == "Oklahoma City"] = 36420
+  df$MSA[df$CITY == "Omaha"] = 36540
+  df$MSA[df$CITY == "St. Louis"] = 41180
+  df$MSA[df$CITY == "Tulsa"] = 46140
+  df$volunteer_pct[substr(df$volunteer_pct,
+                          nchar(df$volunteer_pct),
+                          nchar(df$volunteer_pct)) == "%"] = substr(df$volunteer_pct[substr(df$volunteer_pct,
+                                                                                            nchar(df$volunteer_pct),
+                                                                                            nchar(df$volunteer_pct)) == "%"], 1, nchar(df$volunteer_pct)-1)
+  df$volunteer_pct = as.numeric(df$volunteer_pct)
+  df%<>%select(volunteer_pct, Year, MSA, city = CITY)
+  df
+}
+
+NormZ<-function(x){
+  (x-mean(x))/sd(x)
+}
+
+acs_time <- function(folder, starting.year=2005){
+  wd <- getwd()
+  directory <- paste(wd, folder, sep = "")
+  file_names <- list.files(directory)
+  n<-length(file_names)
+  y<-starting.year
+  for (i in 1:n){
+    file_path <- paste(wd, folder, file_names[i], sep = "")
+    data<-read_csv(file_path,col_names = TRUE, skip=1)
+    names(data)[names(data) == 'Id2'] <- 'FIPS'
+    all.peers <-subset(data, data$FIPS == "01073" |data$FIPS == 37119
+                       |data$FIPS == 39061 |data$FIPS == 39049
+                       |data$FIPS == 26081 |data$FIPS == 37081
+                       |data$FIPS == 45045 |data$FIPS == 18097
+                       |data$FIPS == 29095 |data$FIPS == 47093
+                       |data$FIPS == 21111 |data$FIPS == 47157
+                       |data$FIPS == 47037 |data$FIPS == 40109
+                       |data$FIPS == 31055 |data$FIPS == 29189
+                       |data$FIPS == 29510 |data$FIPS == 40143
+                       |data$FIPS == 39113 |data$FIPS == 12031 
+                       |data$FIPS == 37183 |data$FIPS == 51760)
+  
+    all.peers$year<-y
+    y<-y+1
+    
+    if(i==1){
+     df<-all.peers 
+    }
+    else{
+      names(all.peers)<-names(df)
+      df<-rbind(df, all.peers)
+    }
+  }
+  df
+}
+
+```
+
+Reads data from several CSVs into R, renames 'Region Code' to 'FIPS', subsets each data frame to peers.
+```{r}
+house_dat <- read_csv("input data/qp_input_data/all_transactions_house_price_index.csv", skip = 1, progress = FALSE)
+burdened_dat <- read_csv("input data/qp_input_data/burdened_households.csv", skip = 1, progress = FALSE)
+disconnected_dat <- read_csv("input data/qp_input_data/disconnected youth.csv", skip = 1, progress = FALSE)
+home_own_dat <- read_csv("input data/qp_input_data/homeownership_rate.csv", skip = 1, progress = FALSE)
+income_inequality_dat <- read_csv("input data/qp_input_data/income_inequality.csv", skip = 1, progress = FALSE)
+commute_time_dat <- read_csv("input data/qp_input_data/mean_commuting_time.csv", skip = 1, progress = FALSE)
+net_migration_flow_dat <- read_csv("input data/qp_input_data/net_migration_flow.csv", skip = 1, progress = FALSE)
+race_dat <- read_csv("input data/qp_input_data/white to nonwhite racial dissimilarity index.csv", skip = 1, progress = FALSE)
+median_household_income_dat <- read_csv("input data/qp_input_data/median_household_income.csv", skip = 1)
+
+house_dat <- house_dat %>% rename(FIPS = `Region Code`)
+burdened_dat <- burdened_dat %>% rename(FIPS = `Region Code`)
+disconnected_dat <- disconnected_dat %>% rename(FIPS = `Region Code`)
+home_own_dat <- home_own_dat %>% rename(FIPS = `Region Code`)
+income_inequality_dat <- income_inequality_dat %>% rename(FIPS = `Region Code`)
+commute_time_dat <- commute_time_dat %>% rename(FIPS = `Region Code`)
+net_migration_flow_dat <- net_migration_flow_dat %>% rename(FIPS = `Region Code`)
+race_dat <- race_dat %>% rename(FIPS = `Region Code`)
+median_household_income_dat <- median_household_income_dat %>% rename(FIPS = `Region Code`)
+
+house_dat <- pull_peers_FIPS(house_dat)
+burdened_dat <- pull_peers_FIPS(burdened_dat)
+disconnected_dat <- pull_peers_FIPS(disconnected_dat)
+home_own_dat <- pull_peers_FIPS(home_own_dat)
+income_inequality_dat <- pull_peers_FIPS(income_inequality_dat)
+commute_time_dat <- pull_peers_FIPS(commute_time_dat)
+net_migration_flow_dat <- pull_peers_FIPS(net_migration_flow_dat)
+race_dat <- pull_peers_FIPS(race_dat)
+median_household_income_dat <- pull_peers_FIPS(median_household_income_dat)
+```
+
+Transforms the data from wide form to long form. The year variables in columns 4:n are gathered and converted into rows, each of which contains information on one city in one year. The data frames are joined together, and oservations on St. Louis, which is spread across two counties, are combined using population-weighted averages.
+```{r}
+house_dat <- house_dat %>%
+  gather(4:24, key = "year", value = "housing_price_index") #4:24 refers to column indexes for all the years
+
+burdened_dat <- burdened_dat %>%
+  gather(4:9, key = "year", value = "burdened_households") #4:9 refers to column indexes for all the years
+
+disconnected_dat <- disconnected_dat %>%
+  gather(4:10, key = "year", value = "disconnected_youth") #4:10 refers to column indexes for all the years
+
+home_own_dat <- home_own_dat %>%
+  gather(4:10, key = "year", value = "home_ownership") #4:10 refers to column indexes for all the years
+
+income_inequality_dat <- income_inequality_dat %>%
+  gather(4:9, key = "year", value = "income_inequality") #4:9 refers to column indexes for all the years
+
+commute_time_dat <- commute_time_dat %>%
+  gather(4:10, key = "year", value = "commute_time") #4:10 refers to column indexes for all the years
+
+net_migration_flow_dat <- net_migration_flow_dat %>%
+  gather(4:8, key = "year", value = "net_migration_flow") #4:8 refers to column indexes for all the years
+
+race_dat <- race_dat %>%
+  gather(4:10, key = "year", value = "racial_geography") #4:10 refers to column indexes for all the years
+
+median_household_income_dat <- median_household_income_dat %>%
+  gather(4:24, key = "year", value = "median_household_income") #4:24 refers to column indexes for all the years
+
+
+fred_dat <- full_join(burdened_dat, commute_time_dat, by = c("FIPS", "year",
+                                                             "baseline", "current"))
+fred_dat <- full_join(fred_dat, disconnected_dat, by = c("FIPS", "year"))
+fred_dat <- full_join(fred_dat, home_own_dat, by = c("FIPS", "year"))
+fred_dat <- full_join(fred_dat, house_dat, by = c("FIPS", "year"))
+fred_dat <- full_join(fred_dat, income_inequality_dat, by = c("FIPS", "year"))
+fred_dat <- full_join(fred_dat, net_migration_flow_dat, by = c("FIPS", "year"))
+fred_dat <- full_join(fred_dat, race_dat, by = c("FIPS", "year"))
+fred_dat <- full_join(fred_dat, median_household_income_dat, by = c("FIPS", "year"))
+fred_dat <- pull_peers_FIPS(fred_dat)
+
+fred_dat <- fred_dat %>% select(FIPS, year, baseline, current, 
+                                burdened_households, commute_time, disconnected_youth,
+                                home_ownership, housing_price_index,
+                                income_inequality, net_migration_flow,
+                                racial_geography,median_household_income)
+fred_dat$FIPS[fred_dat$FIPS == "01073"] = 1073
+
+
+#current peers
+fred_dat$year <- as.numeric(fred_dat$year)
+fred_dat$housing_price_index <- as.numeric(fred_dat$housing_price_index)
+fred_dat$racial_geography <- as.numeric(fred_dat$racial_geography)
+fred_dat$median_household_income <- as.numeric(fred_dat$median_household_income)
+
+##Now to give the FIPS codes names
+names <- read_csv("input data/FIPS two stl.csv", col_types = cols(FIPS = col_integer()), progress = FALSE)
+names$FIPS <- as.character(names$FIPS)
+data_named <- left_join(fred_dat, names, by = "FIPS")
+
+##Merge St. Louis city and St. Louis county
+data_named$FIPS <- as.numeric(data_named$FIPS)
+dat <- data_named %>%
+  filter(year > 2004 & year < 2016) %>%
+  pull_peers_FIPS(.)%>%
+  select(-county, -state) %>%
+  group_by(city, year) %>%
+  summarise_each(funs(weighted.mean(.,weights))) %>%
+  ungroup()
+
+#give St. Louis Merged a new FIPS
+dat$FIPS <- as.character(dat$FIPS)
+dat$FIPS[dat$city == "St. Louis"] <- "MERGED"
+dat$FIPS <- as.factor(dat$FIPS)
+
+
+population_one_stl<-read_csv("input data/population_data_one_stl.csv", progress = FALSE)
+population_one_stl$FIPS <- as.character(population_one_stl$FIPS)
+fred_dat <- left_join(dat, population_one_stl, by = c("FIPS", "year"))
+
+
+fred_dat <- fred_dat %>% 
+  mutate(migration_pop = net_migration_flow/population)%>%
+  select(-weights)
+
+qp_data_fips<-fred_dat
+```
+
+Reads in data on social supports and creates variable 'ss_est_per_10000'
+```{r}
+#Reads in and tidies data
+sc_data_5_6 <- cbp_read("input data/qp_input_data/Social Support 5_6", starting_year = 2005)
+sc_data_5_6 %<>% select(naics, FIPS, year, baseline, current, est)
+
+sc_data_7_14 <- cbp_read("input data/qp_input_data/Social Support 7_14", starting_year = 2007)
+sc_data_7_14 %<>% select(naics, FIPS, year, baseline, current, est)
+
+sc_data_15 <- read_csv("input data/qp_input_data/cbp15co.txt.zip", progress = FALSE)
+sc_data_15$year = 2015
+sc_data_15%<>%mutate(FIPS = paste(FIPSTATE, FIPSCTY, sep = ''))%>%
+  pull_peers_FIPS(.)%>%
+  select(naics = NAICS, FIPS, year, baseline, current, est = EST)
+
+sc_data<-bind_rows(sc_data_5_6, sc_data_7_14)
+sc_data<-bind_rows(sc_data, sc_data_15)
+
+#Pull St. Louis out of the Dataset and sum
+sc_data_no<-sc_data%>%filter(naics == 813410 | naics == 713950|
+                               naics == 713910 | naics == 713940|
+                               naics == 711211 | naics == 813110|
+                               naics == 813940 | naics == 813930|
+                               naics == 813910 | naics == 813920)%>%
+  filter(!(FIPS == 29189 | FIPS == 29510))%>%
+  group_by(year, FIPS, baseline, current)%>%
+  summarize(ss_est = sum(est))
+
+#Sum social support firms for all cities besides St. Louis
+stl_sc<-sc_data%>%filter(naics == 813410 | naics == 713950|
+                           naics == 713910 | naics == 713940|
+                           naics == 711211 | naics == 813110|
+                           naics == 813940 | naics == 813930|
+                           naics == 813910 | naics == 813920)%>%
+  filter(FIPS == 29189 | FIPS == 29510)%>%
+  group_by(year, baseline, current)%>%
+  summarize(ss_est = sum(est))
+stl_sc$FIPS <- NA
+stl_sc$FIPS <- "MERGED"
+
+#Add St. Louis back to the dataset
+sc_data <- bind_rows(sc_data_no, stl_sc)
+sc_data$FIPS[sc_data$FIPS == "01073"] = "1073"
+
+#Combine to QP FIPS data
+qp_data_fips<-left_join(qp_data_fips, sc_data, by = c("year","FIPS","baseline","current"))
+
+#Create per 100,000 rate from population data in the QP FIPS dataset
+qp_data_fips%<>% mutate(ss_est_per_10000 = (ss_est/population)*10000)
+```
+
+Reads in population data and calculates the percentage of the MSA population living in the core county for each city.
+```{r}
+#Read in data
+fips_core_county_pop<-read_csv("input data/population_data_one_stl.csv", progress = FALSE)
+
+#Create "key" for core FIPS county to MSA
+msa_fips_key<-read_csv("input data/qp_input_data/changed_msa_counties.csv", progress = FALSE)
+msa_fips_key%<>%pull_peers_FIPS(.)%>%
+  distinct(MSA, .keep_all = TRUE)%>%
+  select(FIPS, MSA)
+msa_fips_key$FIPS[msa_fips_key$MSA == 41180]<- "MERGED"
+
+#Add MSA code
+fips_core_county_pop<-left_join(fips_core_county_pop, msa_fips_key, by = "FIPS")
+fips_core_county_pop%<>%filter(year >= 2010)%>%
+  dplyr::rename(Year = year)
+
+#Tidy MSA Population estimate Data
+msa_pop_est<-read_csv("input data/qp_input_data/cbsa-est2016-alldata.csv", n_max = 1581, progress = FALSE)
+msa_pop_est%<>%filter(LSAD == "Metropolitan Statistical Area")%>%
+  pull_peers_MSA(.)%>%
+  select(CBSA, POPESTIMATE2010:POPESTIMATE2015)%>%
+  gather(POPESTIMATE2010:POPESTIMATE2015, key = 'Year',value = population_estimate)%>%
+  dplyr::rename(MSA = CBSA)
+
+msa_pop_est$Year = substr(msa_pop_est$Year, 12,15)
+msa_pop_est$Year = as.numeric(msa_pop_est$Year)
+
+#Combine datasets and create core county pct estimates
+fips_core_county_pop<-left_join(fips_core_county_pop, msa_pop_est, by = c("MSA", "Year"))
+
+fips_core_county_pop%<>%mutate(pct_pop_core_county = 100*population/population_estimate)%>%
+  dplyr::rename(core_county_pop = population,
+                msa_population_estimate = population_estimate,
+                year = Year)%>%
+  select(FIPS, year, MSA,msa_population_estimate, pct_pop_core_county)
+
+fips_core_county_pop$FIPS <- as.character(fips_core_county_pop$FIPS)
+
+#Combine to QP FIPS data
+qp_data_fips<-left_join(qp_data_fips, fips_core_county_pop, by = c("year", "FIPS"))
+```
+
+Reads in food insecurity data, calculates percentage for St. Louis, and appends variable to qp_data_fips
+```{r}
+#Read in data
+food_insec<-read_csv("input data/qp_input_data/GLP counties food insecure_PCT.csv", progress = FALSE)
+
+#Tidy
+food_insec%<>%
+  pull_peers_FIPS(.)%>%
+  dplyr::rename(year = Year)%>%
+  select(city, FIPS, year, food_insecure_overall, food_insecure_child)
+
+#Add weights for St. Louis
+weights <-
+  read_csv(
+  "input data/FIPS two stl.csv",
+  col_types = cols(FIPS = col_integer()),
+  progress = FALSE
+  ) 
+food_insec<-left_join(food_insec, weights, by = c("city", "FIPS"))
+food_insec$FIPS<-as.character(food_insec$FIPS)
+
+#Compute rates for St. Louis
+st_lou<-food_insec%>%
+  filter(FIPS == "29189" | FIPS == "29510")%>%
+  group_by(year, city)%>%
+  summarise(food_insecure_overall = weighted.mean(food_insecure_overall, weights),
+            food_insecure_child = weighted.mean(food_insecure_child, weights))
+st_lou$FIPS<-"MERGED"
+st_lou%<>%select(year, city, food_insecure_overall, food_insecure_child, FIPS)
+
+food_insec%<>%select(-c(county, state, weights))%>%
+  filter(!(FIPS == 29189 | FIPS == 29510))
+
+#Combine St. Louis back to data set
+food_insec <- bind_rows(food_insec, st_lou)
+
+#Combine to QP FIPS data
+qp_data_fips<-left_join(qp_data_fips, food_insec, by = c("year", "FIPS", "city"))
+```
+
+Reads in food desert data and calculates the percentage of households in each city located in a food desert. The number of households in a food desert is the number of households with no vehicle, living 1/2 a mile or more from a supermarket, and located in a low income census tract. This data is appended to 'qp_data_fips'
+Grocery Store estimates are from a 2010 study. Population estimates are from 2015.
+```{r}
+#Read in Data
+fd_data <- read_csv("input data/qp_input_data/food_desert_2015.csv",
+              col_types = cols(laasian20 = col_double(),
+                               lanhopi20 = col_double(),
+                               lanhopi20share = col_double(),
+                               laasian20share = col_double(),
+                               laaian20share = col_double(),
+                               laaian20 = col_double(),
+                               laomultir20 = col_double(),
+                               laomultir20share = col_double(),
+                               lahisp20 = col_double(),
+                               lahisp20share = col_double()), 
+                               progress = FALSE)
+
+#Creating FIPS Codes w/ only the first five digits of tract codes
+FIPS <- substr(fd_data$CensusTract, 1,5)
+FIPS <- as.numeric(FIPS)
+fd_data$FIPS <- NA
+fd_data$FIPS <- FIPS
+fd_data$FIPS[fd_data$State == "Alabama" & fd_data$County == "Jefferson"] <- 1073
+
+#Obtain Total Population
+pop <- fd_data %>%
+  pull_peers_FIPS(.) %>%
+  group_by(FIPS) %>%
+  summarise(total_city_pop = sum(POP2010),
+            total_city_households = sum(OHU2010))
+
+#Select Data
+fd_data<-fd_data%>%
+  pull_peers_FIPS(.)%>%
+  select(c(CensusTract:LILATracts_Vehicle,LALOWI1_10, LALOWI05_10,
+           lahunvhalf, lahunv1,HUNVFlag,LowIncomeTracts,
+           FIPS, baseline,current))%>%
+  select(-c(GroupQuartersFlag,NUMGQTRS,PCTGQTRS, LILATracts_1And20))
+
+#Add population
+fd_data<-inner_join(fd_data, pop, by = "FIPS")
+
+#Add in St. Louis Population and Household totals
+fd_data$FIPS[fd_data$FIPS==29189]<-"MERGED"
+fd_data$FIPS[fd_data$FIPS==29510]<-"MERGED"
+fd_data$total_city_pop[fd_data$FIPS=="MERGED"] <- 1318248
+fd_data$total_city_households[fd_data$FIPS=="MERGED"] <- 546822
+
+#Calculate percentages
+fd_data <- fd_data %>%
+  filter(LowIncomeTracts == 1) %>%
+  group_by(FIPS,
+           total_city_pop,
+           total_city_households,
+           current,
+           baseline) %>%
+  summarise(est_food_desert_households = sum(lahunvhalf)) %>%
+  mutate(est_food_desert_households_per100000_lowIncTract =
+           est_food_desert_households / total_city_households * 100)
+
+fd_data$year<-2015
+fd_data <- ungroup(fd_data)
+fd_data%<>%select(-c(total_city_pop,total_city_households, current, baseline))
+
+#Combine to QP FIPS data
+qp_data_fips<-left_join(qp_data_fips, fd_data, by = c("FIPS", "year"))
+```
+
+Reads in county health ranking data and subsets the data to peer cities and relevant variables. Joins the data to 'qp_data_fips'
+```{r}
+#Reading in Data
+chr_df_17 <- read_csv("input data/qp_input_data/2017CHR_CSV_Analytic_Data.csv",
+                       col_types = cols(
+                       measure_127_value = col_character(),
+                       measure_131_value = col_character()
+                       )
+                      )
+
+chr_df_17 = chr_df_17 %>% rename(FIPS = fipscode)
+chr_df_17 <- pull_peers_FIPS(chr_df_17)
+chr_df_17$FIPS[chr_df_17$FIPS == "01073"] <- "1073"
+
+chr_df_17 <- chr_df_17 %>%
+  select(
+    violent_crime = measure_43_value,
+    injury_deaths = measure_135_value,
+    air_pollution = measure_125_value,
+    severe_housing_problems = measure_136_value,
+    driving_alone_to_work = measure_67_value,
+    FIPS, current, baseline
+  )
+
+#Selecting Current Peers only
+chr_df_17 <- chr_df_17 %>% filter(current == 1)
+
+name_df <- read_csv("input data/FIPS two stl.csv")
+name_df$FIPS <- as.character(name_df$FIPS)
+
+chr_named <- left_join(chr_df_17, name_df, by = "FIPS")
+chr_named$FIPS <- as.numeric(chr_named$FIPS)
+
+chr_stl <- chr_named %>%
+  select(-county, -state) %>%
+  group_by(city) %>%
+  summarise_each(funs(weighted.mean(.,weights)), -weights)
+
+# give St. Louis Merged a new FIPS
+chr_stl$FIPS <- as.character(chr_stl$FIPS)
+chr_stl$FIPS[chr_stl$city == "St. Louis"] <- "MERGED"
+chr_stl%<>%select(-c(current, baseline, city))%>%
+  mutate(severe_housing_problems = severe_housing_problems*100,
+         driving_alone_to_work = driving_alone_to_work*100)
+chr_stl$year<-2015
+
+#Combine to QP FIPS data
+qp_data_fips<-left_join(qp_data_fips, chr_stl, by = c("year", "FIPS"))
+
+```
+
+Calculates the Multidimensional Poverty Index Analysis (MPI) used in the 2015 Competative City Update. Education, health, income, and unemployment data are read into R, and the var values for each variable are converted to z-scores using NormZ. The z-scores are combined to identify tracts which qualify as MPI tracts and extreme MPI tracts. The percentage of each city living in MPI and extreme MPI neighborhoods is appended to 'qp_data_fips'.
+```{r}
+#Read in data
+pc_ed_data <- read_csv("input data/qp_input_data/ACS_14_5YR_B23006_with_ann.csv", skip = 1)
+pc_ed_data %<>% 
+  select(Id2,
+         ed_population = `Estimate; Total:`, 
+         less_than_hs = `Estimate; Less than high school graduate:`,
+         bachelors_up = `Estimate; Bachelor's degree or higher:`) %>%
+  mutate(bachelors_degree = bachelors_up/ed_population,
+         no_hs_degree = less_than_hs/ed_population)
+
+pc_health_data <- read_csv("input data/qp_input_data/ACS_14_5YR_S2701_with_ann.csv", skip=1)
+pc_health_data %<>%
+  select(Id2,
+         health_population = `Total; Estimate; Total civilian noninstitutionalized population`, 
+         uninsured = `Percent Uninsured; Estimate; Total civilian noninstitutionalized population`)
+
+pc_health_data$uninsured = as.numeric(as.character(pc_health_data$uninsured))
+
+pc_low_inc_data<-read_csv("input data/qp_input_data/ACS_14_5YR_C17002_with_ann.csv", skip=1)
+pc_low_inc_data%<>%
+  select(
+    Id2,
+    low_inc_population = `Estimate; Total:`,
+    less_than_50 = `Estimate; Total: - Under .50`,
+    less_than_1 = `Estimate; Total: - .50 to .99`,
+    less_than_1.25 = `Estimate; Total: - 1.00 to 1.24`,
+    less_than_1.5 = `Estimate; Total: - 1.25 to 1.49`
+    ) %>% 
+  mutate(
+    low_income = (less_than_50 + less_than_1 + less_than_1.25 + less_than_1.5) /
+    low_inc_population
+    )
+
+pc_unemp_data<-read_csv("input data/qp_input_data/ACS_14_5YR_S2301_with_ann.csv",skip=1)
+pc_unemp_data%<>%
+  select(Id2, 
+         unemp_population = `Total; Estimate; Population 16 years and over`,
+         unemployed = `Unemployment rate; Estimate; Population 16 years and over`)
+
+pc_unemp_data$unemployed = as.numeric((pc_unemp_data$unemployed))
+
+pc_data = left_join(pc_ed_data, pc_health_data, by = "Id2")
+pc_data = left_join(pc_data, pc_low_inc_data, by = "Id2")
+pc_data = left_join(pc_data, pc_unemp_data, by = "Id2")
+
+#Convert percents to a scale of 0-100
+pc_data = pc_data %>%
+  mutate(low_income = low_income*100, bachelors_degree = bachelors_degree*100, 
+         no_hs_degree = no_hs_degree*100)
+
+##Create FIPS codes using the first 5 digits of tract codes
+FIPS = substr(pc_data$Id2, 1,5)
+FIPS = as.numeric(FIPS)
+pc_data = cbind(pc_data, FIPS)
+pc_data$FIPS[pc_data$FIPS == 10730] <- 1073
+pc_data$FIPS[pc_data$FIPS == 29189] <- "MERGED"
+pc_data$FIPS[pc_data$FIPS == 29510] <- "MERGED"
+pc_data = filter(pc_data, !(health_population < 2 |
+                              low_inc_population == 0))
+#Calculate Z-scores
+pc_mpi_data = pc_data %>%
+  group_by(FIPS)%>%
+  mutate(z_low_income = NormZ(low_income),
+         z_unemployed = NormZ(unemployed),
+         z_no_hs_degree = NormZ(no_hs_degree),
+         z_uninsured = NormZ(uninsured),
+         z_overall = (z_low_income+z_unemployed+z_no_hs_degree+z_uninsured)/4)
+
+mpi_data = pc_mpi_data %>%
+  select(Id2, FIPS, mpi = z_overall, population = health_population)
+
+##IDing mpi poor neighborhoods and extreme mpi poor neighborhoods
+mpi_data$mpi_nh = NA
+mpi_data$mpi_nh = "no"
+mpi_data$mpi_nh[mpi_data$mpi > 1] = "yes"
+mpi_data$mpi_nh = as.factor(mpi_data$mpi_nh)
+mpi_data$ex_mpi_nh = NA
+mpi_data$ex_mpi_nh = "no"
+mpi_data$ex_mpi_nh[mpi_data$mpi > 2.5] = "yes"
+mpi_data$ex_mpi_nh = as.factor(mpi_data$ex_mpi_nh)
+
+##grouping by cities
+mpi_city = mpi_data %>%
+  group_by(FIPS) %>%
+  dplyr::summarize(pop_mpi = sum(population[mpi_nh == "yes"]),
+                   pop_ex_mpi = sum(population[ex_mpi_nh == "yes"]),
+                   population = sum(population)
+  ) 
+
+#Computing Population living in MP
+mpi_city = mpi_city %>%
+  mutate(percent_in_mpi = 100*pop_mpi/population,
+         percent_in_ex_mpi = 100*pop_ex_mpi/population) %>%
+  arrange(percent_in_mpi)%>%
+  select(-population)
+mpi_city$year = 2014
+mpi_city$FIPS = as.character(mpi_city$FIPS)
+
+qp_data_fips = left_join(qp_data_fips, mpi_city, by = c("FIPS", "year"))
+```
+
+Reads in child poverty data, calculates the percentage of children living in poverty by city, and appends the variable to 'qp_data_fips'
+```{r}
+data = acs_time("/input data/qp_input_data/B17001/")
+
+data = data %>%
+  mutate(
+    under_5_per =
+      (`Estimate; Income in the past 12 months below poverty level: - Male: - Under 5 years` +
+       `Estimate; Income in the past 12 months below poverty level: - Female: - Under 5 years`
+      ) /
+      (
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - Under 5 years` +
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - Under 5 years` +
+      `Estimate; Income in the past 12 months below poverty level: - Male: - Under 5 years` +
+      `Estimate; Income in the past 12 months below poverty level: - Female: - Under 5 years`
+      ),
+    
+    five_to_17_under = 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 5 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 6 to 11 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 12 to 14 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 15 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 16 and 17 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 5 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 6 to 11 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 12 to 14 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 15 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 16 and 17 years`,
+
+    five_to_17_over =  
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 5 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 6 to 11 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 12 to 14 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 15 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 16 and 17 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 5 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 6 to 11 years` +
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 12 to 14 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 15 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 16 and 17 years`,
+
+    five_to_17_per = five_to_17_under / (five_to_17_over + five_to_17_under),
+    
+    child_under = 
+      five_to_17_under +
+      `Estimate; Income in the past 12 months below poverty level: - Male: - Under 5 years` + 
+      `Estimate; Income in the past 12 months below poverty level: - Female: - Under 5 years`,
+    
+    child_over = 
+      five_to_17_over + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - Under 5 years` +
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - Under 5 years`,
+    
+    child_total = child_under + child_over,
+    
+    child_per = child_under / (child_total)
+)
+
+child_pov_data = data %>%
+  select(FIPS, year, child_per, child_total)
+  child_pov_data$FIPS[child_pov_data$FIPS == "01073"] = "1073"
+
+child_pov_stl <- child_pov_data %>%
+  filter(FIPS == 29189 | FIPS == 29510) %>%
+  select(-FIPS) %>%
+  group_by(year) %>%
+  summarise_each(funs(weighted.mean(.,child_total)), -child_total) %>%
+  ungroup()
+
+child_pov_stl$FIPS <- "MERGED"
+  
+child_pov_data <- child_pov_data %>%
+  filter(!(FIPS == 29189 | FIPS == 29510)) %>%
+  bind_rows(child_pov_stl) %>%
+  mutate(child_per = child_per *100)%>%
+  select(-child_total)
+
+qp_data_fips %<>% left_join(child_pov_data, by = c("FIPS", "year"))
+```
+
+Reads volunteer data for 2011-2015 into R, processes it, and appends the observations to 'qp_data_msa'
+```{r}
+#Read in Data
+v_2015 <- read_csv("input data/qp_input_data/volunteer2015.csv", progress = FALSE)
+
+#Add MSA codes
+v_2015$MSA <- NA
+v_2015$MSA[v_2015$CITY == "Birmingham-Hoover, AL"] = 13820
+v_2015$MSA[v_2015$CITY == "Charlotte-Gastonia-Concord, NC-SC"] = 16740
+v_2015$MSA[v_2015$CITY == "Cincinnati-Middletown, OH-KY-IN"] = 17140
+v_2015$MSA[v_2015$CITY == "Columbus, OH"] = 18140
+v_2015$MSA[v_2015$CITY == "Grand Rapids - Wyoming, MI"] = 24340
+v_2015$MSA[v_2015$CITY == "Greensboro-High Point, NC"] = 24660
+v_2015$MSA[v_2015$CITY == "Greenville, SC"] = 24860
+v_2015$MSA[v_2015$CITY == "Indianapolis, IN"] = 26900
+v_2015$MSA[v_2015$CITY == "Kansas City, MO-KS"] = 28140
+v_2015$MSA[v_2015$CITY == "Knoxville, TN"] = 28940
+v_2015$MSA[v_2015$CITY == "Louisville, KY-IN"] = 31140
+v_2015$MSA[v_2015$CITY == "Memphis, TN-MS-AR"] = 32820
+v_2015$MSA[v_2015$CITY == "Nashville-Davidson-Murfreesboro, TN"] = 34980
+v_2015$MSA[v_2015$CITY == "Oklahoma City, OK"] = 36420
+v_2015$MSA[v_2015$CITY == "Omaha-Council Bluffs, NE-IA"] = 36540
+v_2015$MSA[v_2015$CITY == "St. Louis, MO-IL"] = 41180
+v_2015$MSA[v_2015$CITY == "Tulsa, OK"] = 46140
+
+#convert perentages from the format string format "xx.xx%" to numerics
+v_2015$`2015` <- as.numeric(substr(v_2015$`2015`, 1, nchar(v_2015$`2015`)-1))
+v_2015$`2015` <- as.numeric(v_2015$`2015`)
+
+v_2015$Year <- NA
+v_2015$Year <- 2015
+
+v_2015%<>%dplyr::rename("volunteer_pct" = `2015`)%>%
+  select(volunteer_pct, Year, MSA)
+
+v_2014<-volunteer_read("input data/qp_input_data/volunteer2014.csv")
+v_2013<-volunteer_read("input data/qp_input_data/volunteer2013.csv")
+v_2012<-volunteer_read("input data/qp_input_data/volunteer2012.csv")
+v_2011<-volunteer_read("input data/qp_input_data/volunteer2011.csv")
+
+#Add City Names to 2015
+key<-v_2014%>%
+  select(MSA, city)
+v_2015 <- left_join(v_2015, key, by = "MSA")
+
+#Combining Datasets
+v_data <- rbind(v_2011, v_2012)
+v_data <- v_data %>%
+  rbind(v_2013)%>%
+  rbind(v_2014)%>%
+  rbind(v_2015)
+v_data$current <- 1
+v_data%<>%dplyr::rename(year = Year)
+
+#Create MSA Data
+qp_data_msa <- v_data
+```
+
+Loads neighborhood names into R and creates a data frame 'mpi_data_maps' containing spatial variables and MPI data for census tracts in Louisville.
+```{r}
+neighborhoods <- read_csv("map data/census tract neighborhoods.csv",col_types = cols(Id2 = col_character()))
+
+mpi_data_maps <- left_join(mpi_data, neighborhoods, by = c("Id2"))
+mpi_data_maps %<>% filter(FIPS == "21111")%>%
+  select(-population)
+```
+
+Reads census tract race data for Louisville, calculates the percentage of residents who are white and the difference between the average precentage of white residents in Louisville and the percentage found in each census tract (dif_score), and appends these variables to map_data
+```{r}
+#White Data
+white_dat <- read_csv("input data/qp_input_data/ACS_14_5YR_B02001_with_ann.csv", skip = 1)
+white_dat %<>% select(Id, Id2, population = `Estimate; Total:`, 
+                      white_pop = `Estimate; Total: - White alone`)%>%
+  mutate(pct_white = white_pop/population)
+
+FIPS = substr(white_dat$Id2, 1,5)
+FIPS = data.frame(FIPS)
+white_dat = bind_cols(white_dat, FIPS)
+white_dat = filter(white_dat, FIPS == "21111" & population > 0 ) #Removes the airport
+
+total <- white_dat%>%
+  group_by(FIPS)%>%
+  summarize(total_pop = sum(population), 
+            total_white = sum(white_pop))%>%
+  mutate(total_white_pct = total_white/total_pop)
+
+white_dat$total_white_pct = total$total_white_pct
+
+#Computing the "Difference Score"
+white_dat %<>% mutate(dif_score = abs(pct_white - total_white_pct))%>%
+  select(-population)
+
+#Rescaling
+white_dat$pct_white = white_dat$pct_white*100
+white_dat$dif_score = white_dat$dif_score*100
+
+map_data <- left_join(mpi_data_maps, white_dat, by = c("Id2", "FIPS"))
+```
+
+Adds median income data to map_data
+```{r}
+#ACS Data Analysis
+med_inc <- read_csv(
+  "input data/qp_input_data/ACS_15_5YR_B19013_with_ann.csv",
+  skip = 1,
+  col_types = cols(Id2 = col_character(),
+  Id = col_character())
+  )
+
+med_inc %<>% select(Id, Id2, median_income = `Estimate; Median household income in the past 12 months (in 2015 Inflation-adjusted dollars)`)
+
+map_data <- map_data %>%
+  left_join(med_inc, by = c("Id2", "Id"))
+```
+
+Millenial Migration Flow Analysis (Not included in the website, but is a seperate data pull for the Fund for the Arts). Calculates the percentage of residents in Jefferson county between the ages of 25 and 34 who moved from a different county, state, or country. Appends the data to 'qp_data_fips'
+```{r}
+mill_mig_data<- acs_time("/input data/qp_input_data/B07001/", starting.year = 2010)
+
+mill_mig_data$FIPS[mill_mig_data$FIPS == "01073"] = "1073"
+
+mill_mig_data <- pull_peers_FIPS(mill_mig_data) %>%
+  select(
+  FIPS, year,
+  population = `Estimate; Total:`,
+  mig_dif_state_25_29 = `Estimate; Total: - Moved from different state: - 25 to 29 years`,
+  mig_dif_state_30_34 = `Estimate; Total: - Moved from different state: - 30 to 34 years`,
+  mig_abroad_25_29 = `Estimate; Total: - Moved from abroad: - 25 to 29 years`,
+  mig_abroad_30_34 = `Estimate; Total: - Moved from abroad: - 30 to 34 years`,
+  mig_dif_county_25_29 = `Estimate; Total: - Moved from different county within same state: - 25 to 29 years`,
+  mig_dif_county_30_34 = `Estimate; Total: - Moved from different county within same state: - 30 to 34 years`)
+
+stl_mig <- mill_mig_data %>%
+  filter(FIPS == 29189 | FIPS == 29510)%>%
+  select(-FIPS)%>%
+  group_by(year)%>%
+  summarise_all(sum)%>%
+  ungroup()
+stl_mig$FIPS <- "MERGED"
+
+mill_mig_data <- bind_rows(stl_mig, filter(mill_mig_data, !(FIPS == 29189 |FIPS ==29510)))
+
+mill_mig_data %>% 
+  mutate(mill_mig = 
+      mig_dif_state_25_29 + 
+      mig_dif_state_30_34 + 
+      mig_abroad_25_29 +
+      mig_abroad_30_34 + 
+      mig_dif_county_25_29 + 
+      mig_dif_county_30_34,
+    
+    mil_mig_per_100000 = (mill_mig / population) * 100000
+  )%>%
+  
+  rename(population.y = population)
+
+#qp_data_fips <- left_join(qp_data_fips, mill_mig_data, by = c("FIPS", "year"))
+
+```
+
+Optional code for exporting the millennial migration data to the KY Fund for the
+Arts.
+```{r}
+# names<-read_csv("input data/FIPS one stl.csv")
+
+# excel_mil <- mill_mig_data %>%
+#   left_join(names, by = "FIPS")%>%
+#   select(-c(mig_dif_state_25_29:mig_dif_county_30_34))%>%
+#   rename(Population = mig_population, `Number Millennials Immigrating` = mill_mig,
+#          `Number Millennials Immigrating per 100,000 population` = mil_mig_per_100000, `Current GLP Peer City` = current, `Baseline GLP Peer City` = baseline)%>%
+#            arrange(year, city)
+# 
+# setwd("~/Desktop")
+# write_csv(excel_mil,"millenial_migration_data_GLP.csv")
+```
+
+Writes data to CSVs
+```{r}
+write_csv(qp_data_fips, "output data/qp_data_fips.csv")
+write_csv(qp_data_msa, "output data/qp_data_msa.csv")
+write_csv(map_data, "map data/qp_map_data.csv")
+```

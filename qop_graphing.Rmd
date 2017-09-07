@@ -1,0 +1,550 @@
+---
+title: "QOP Graphing"
+output: html_notebook
+---
+
+Code for the graphs appearing in the quality of place section of the GLP website.
+
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "C:/Users/Harrison Kirby/Desktop/GLP/glp_website")
+```
+
+Load libraries
+```{r}
+library(tidyverse)
+library(ggthemes)
+library(reshape2)
+library(showtext)
+library(classInt)
+library(rgdal)
+library(leaflet)
+library(RColorBrewer)
+library(htmlwidgets)
+```
+
+Create new directories
+```{r}
+if(!dir.exists("Images")){
+  dir.create("Images")
+}
+if(!dir.exists("Images/QP_Images")){
+  dir.create("Images/QP_Images")
+}
+if(!dir.exists("Images/Maps")){
+  dir.create("Images/Maps")
+}
+if(!dir.exists("Images/Maps/qp_maps")){
+  dir.create("Images/Maps/qp_maps")
+}
+```
+
+Load graphing functions and fonts
+```{r rankings}
+source("graphing_functions.R")
+
+font.add("Museo Sans 300", "C:/Users/Harrison Kirby/Desktop/GLP/MuseoSans_300.otf")
+font.add("Museo Sans Italic", "C:/Users/Harrison Kirby/Desktop/GLP/MuseoSans_300_Italic.otf")
+```
+
+Read data
+```{r}
+setwd("output data")
+qp_data_fips<-read_csv("qp_data_fips.csv")
+qp_data_msa<-read_csv("qp_data_msa.csv")
+```
+
+Ranking Graphs
+```{r}
+setwd("Images/QP_Images")
+
+showtext.auto()
+
+jpeg("qp_food_insecurity_child_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  filter(qp_data_fips, year == 2015),
+  'food_insecure_child',
+  order = "Ascending",
+  plot_title = "Food Insecurity - Children, 2015",
+  caption_text = "Source: Greater Louisville Project Data from Feeding America, Map the Meal Gap"
+)
+dev.off()
+
+jpeg("qp_food_insecurity_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  filter(qp_data_fips, year == 2015),
+  'food_insecure_overall',
+  order = "Ascending",
+  plot_title = "Food Insecurity, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from Feeding America, Map the Meal Gap"
+)
+dev.off()
+
+jpeg("qp_pct_pop_core_county.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  filter(qp_data_fips, year == 2015),
+  'pct_pop_core_county',
+  order = "Descending",
+  plot_title = "Population Living in Core MSA County, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from US Census Bureau, MSA"
+)
+dev.off()
+
+jpeg("qp_food_desert_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  filter(qp_data_fips, year == 2015),
+  'est_food_desert_households_per100000_lowIncTract',
+  order = "Ascending",
+  plot_title = "Households Living in a Food Desert, 2010",
+  y_title = "Percent of Households Living in a Low Income Census Tract With No Vehicle and Limited Access to Food\n",
+  caption_text = "Source: Greater Louisville Project \nData from USDA, Food Atlas 2015"
+)
+dev.off()
+
+jpeg("qp_volunteer_rate_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  filter(qp_data_msa, year == 2014),
+  "volunteer_pct",
+  plot_title = "Volunteer Rate, 2014",
+  caption_text = "Source: Greater Louisville Project\nData from the Corporation for National and Community Service\nMSA Groupings are 2003 OMB standards"
+)
+dev.off()
+
+jpeg("qp_social_support_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'ss_est_per_10000',
+  order = "Descending",
+  y_title = "Membership Associations per 10,000 residents",
+  plot_title = "Social Support, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from CBP Statistics from US Census"
+)
+dev.off()
+
+jpeg("qp_commute_time_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'commute_time',
+  order = "Ascending",
+  y_title = "Commute Time (minutes)",
+  plot_title = "Commute Time, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_severe_burdened_households_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'burdened_households',
+  order = "Ascending",
+  y_title = "Percent of Households",
+  plot_title = "Burdened Households, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_median_household_income_ranking.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  filter(qp_data_fips, year == 2014),
+  "median_household_income", sigfig = 3, num_dec = 0,
+  order = "Descending",
+  plot_title = "Median Household Income, 2015",
+  y_title = "Dollars",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+  )
+dev.off()
+
+jpeg("qp_housing_price_index_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),sigfig = 4,
+  'housing_price_index',
+  order = "Ascending",
+  y_title = "Index Score",
+  plot_title = "Housing Price Index, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_homeownership_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'home_ownership',
+  order = "Descending",
+  y_title = "Percent",
+  plot_title = "Homeownership, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_income_inequality_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'income_inequality',
+  order = "Ascending",
+  y_title = "Ratio",
+  plot_title = "Income Inequality, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_disconnected_youth_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'disconnected_youth',
+  order = "Ascending",
+  y_title = "Percent",
+  plot_title = "Disconnected Youth, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_net_migration_flow_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group_mig(
+  as.data.frame(filter(qp_data_fips, year == 2013)),
+  'net_migration_flow',
+  order = "Descending",
+  y_title = "Net Migration Flow",
+  plot_title = "Net Migration Flow, 2013",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_racial_geography_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'racial_geography',
+  order = "Ascending",
+  y_title = "Index Score",
+  plot_title = "Racial Dissimilarity Index, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED"
+)
+dev.off()
+
+jpeg("qp_violent_crime_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'violent_crime', num_dec = 0,
+  order = "Ascending",
+  y_title = "Violent Crimes per 100,000",
+  plot_title = "Violent Crime",
+  caption_text = "Source: Greater Louisville Project \nData from the Robert Wood Johnson Foundation 2017 County Health Rankings"
+)
+dev.off()
+
+jpeg("qp_injury_death_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'injury_deaths',
+  order = "Ascending",
+  y_title = "Injury Mortality Rate per 100,000",
+  plot_title = "Injury Deaths",
+  caption_text = "Source: Greater Louisville Project \nData from the Robert Wood Johnson Foundation 2017 County Health Rankings"
+)
+dev.off()
+
+jpeg("qp_air_pollution_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'air_pollution',
+  order = "Ascending",
+  y_title = "Average Daily Amount of Fine Particulate Matter in Micrograms per Cubic Meter",
+  plot_title = "Air Pollution",
+  caption_text = "Source: Greater Louisville Project \nData from the Robert Wood Johnson Foundation 2017 County Health Rankings"
+)
+dev.off()
+
+jpeg("qp_severe_housing_problems_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'severe_housing_problems',
+  order = "Ascending",
+  y_title = "Percent",
+  plot_title = "Severe Housing Problems",
+  caption_text = "Source: Greater Louisville Project \nData from the Robert Wood Johnson Foundation 2017 County Health Rankings"
+)
+dev.off()
+
+jpeg("qp_driving_alone_to_work_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2015)),
+  'driving_alone_to_work',
+  order = "Ascending",
+  y_title = "Percent",
+  plot_title = "Driving Alone to Work",
+  caption_text = "Source: Greater Louisville Project \nData from the Robert Wood Johnson Foundation 2017 County Health Rankings"
+)
+dev.off()
+
+jpeg("qp_multidimensional_poverty_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  as.data.frame(filter(qp_data_fips, year == 2014)),
+  'percent_in_mpi',
+  order = "Ascending",
+  y_title = "Percent",
+  plot_title = "Multidimensional Poverty, 2014",
+  caption_text = "Source: Greater Louisville Project \nData from American Community Survey"
+)
+dev.off()
+
+jpeg("qp_child_poverty_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(
+  qp_data_fips %>% filter(year == 2015) %>% as.data.frame(),
+  'child_per',
+  order = "Ascending",
+  y_title = "Percent",
+  plot_title = "Child Poverty, 2015",
+  caption_text = "Source: Greater Louisville Project \nData from American Community Survey Table B17001"
+)
+dev.off()
+
+#Optional code for exporting the millennial migration data to the KY Fund for the Arts.
+#jpeg("qp_millennial_migration_rankings.jpg", 900, 600, res = 100)
+#rank_and_nb_group(
+#  qp_data_fips %>% filter(year == 2015) %>% as.data.frame(),
+#  'mil_mig_per_100000',
+#  order = "Descending",
+#  y_title = "Number of Millennials (Ages 25-34) moving to the city from another county, state, or country\nper 100,000",
+#  plot_title = "Millennial Immigration Patterns, 2015",
+#  caption_text = "Source: Greater Louisville Project \nData from American Community Survey Table B07001")
+#dev.off()
+
+showtext.auto(FALSE)
+```
+
+Trendline Graphs
+```{r}
+setwd("Images/QP_Images")
+
+showtext.auto()
+
+jpeg("qp_food_insecurity_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  qp_data_fips,
+  'food_insecure_overall',
+  plot_title = "Food Insecurity",
+  rollmean = 1,
+  caption_text = "Source: Greater Louisville Project \nData from Feeding America, Map the Meal Gap",
+  break_settings = seq(2013, 2015, 2),
+  xmin = 2012.5,
+  xmax = 2015.5)
+dev.off()
+
+jpeg("qp_food_insecurity_child_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  qp_data_fips,
+  'food_insecure_child',
+  plot_title = "Food Insecurity - Children",
+  rollmean = 1,
+  caption_text = "Source: Greater Louisville Project \nData from Feeding America, Map the Meal Gap",
+  break_settings = seq(2013, 2015, 2),
+  xmin = 2012.5,
+  xmax = 2015.5)
+dev.off()
+
+jpeg("pct_pop_living_in_core_county_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  qp_data_fips, 
+  "pct_pop_core_county",
+  plot_title = "Percent Population Living in Core MSA County",
+  caption_text = "Source: Greater Louisville Project\nData frome US Census Bureau, MSA",
+  xmin = 2010, 
+  xmax = 2015,
+  rollmean = 1)
+dev.off()
+
+jpeg("qp_volunteer_rate_trendline.jpg", 900, 600, res = 100)
+graph_trendline_msa(
+  filter(qp_data_msa, year<=2014),
+  var = "volunteer_pct",
+  rollmean = 1,
+  xmin = 2011,
+  xmax = 2014,
+  plot_title = "Volunteer Rate",
+  caption_text = "Source: Greater Louisville Project\nData from the Corporation for National and Community Service\nMSA Groupings are 2003 OMB standards")
+dev.off()
+
+jpeg("qp_social_support_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips),
+  var = 'ss_est_per_10000', 
+  rollmean = 1,
+  plot_title = "Social Support",
+  y_title = "Membership Associations per 10,000 residents",
+  caption_text = "Source: Greater Louisville Project \nData from CBP Statistics from US Census",
+  xmin = 2005, 
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_net_migration_flow_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips), 
+  var = 'net_migration_flow', 
+  rollmean = 1,
+  plot_title = "Net Migration Flow",
+  y_title = "Net Migration Flow",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2009, 
+  xmax = 2013)
+dev.off()
+
+jpeg("qp_commute_time_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips),
+  var = 'commute_time',
+  rollmean = 1,
+  plot_title = "Commute Time",
+  y_title = "Commute Time (minutes)",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2009,
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_severe_burdened_households_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips), 
+  var = 'burdened_households', 
+  rollmean = 1,
+  plot_title = "Burdened Households",
+  y_title = "Percent",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2010, 
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_housing_price_index_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips), 
+  var = 'housing_price_index', 
+  rollmean = 1,
+  plot_title = "Housing Price Index",
+  y_title = "Index Score",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2009,
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_homeownership_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips), 
+  var = 'home_ownership', 
+  rollmean = 1,
+  plot_title = "Homeownership",
+  y_title = "Percent",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2009, 
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_income_inequality_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips), 
+  var = 'income_inequality',
+  rollmean = 1,
+  plot_title = "Income Inequality",
+  y_title = "Ratio",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2010, 
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_disconnected_youth_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips),
+  var = 'disconnected_youth', rollmean = 1,
+  plot_title = "Disconnected Youth",
+  y_title = "Percent",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED", 
+  xmin = 2009, 
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_racial_geography_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(qp_data_fips), 
+  var = 'racial_geography', 
+  rollmean = 1,
+  plot_title = "Racial Dissimilarity Index",
+  y_title = "Index Score",
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  xmin = 2009, 
+  xmax = 2015)
+dev.off()
+
+jpeg("qp_median_household_income_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  qp_data_fips, 
+  "median_household_income",
+  plot_title = "Median Household Income",
+  subtitle = "Annual",
+  rollmean = 1,
+  caption_text = "Source: Greater Louisville Project \nData from the Federal Reserve via GeoFRED",
+  break_settings = seq(2005, 2014, 2),
+  xmin = 2005, 
+  xmax = 2014,
+  y_title = "Dollars")
+dev.off()
+
+jpeg("qp_child_poverty_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  qp_data_fips, 
+  "child_per",
+  plot_title = "Child Poverty",
+  rollmean = 3,
+  caption_text = "Source: Greater Louisville Project \nData from American Community Survey Table B17001",
+  xmin = 2005, 
+  xmax = 2015, 
+  y_title = "Percent")
+dev.off()
+
+#Optional code for exporting the millennial migration data to the KY Fund for the Arts.
+#jpeg("qp_millennial_migration_trendline.jpg", 900, 600, res = 100)
+#graph_trendline(
+#  qp_data_fips, 
+#  "mil_mig_per_100000",
+#  plot_title = "Millennial Immigration Patterns",
+#  rollmean = 1,
+#  caption_text = "Source: Greater Louisville Project \nData from American Community Survey Table B07001",
+#  break_settings = seq(2011, 2015, 2),
+#  xmin = 2010, 
+#  xmax = 2015, 
+#  y_title = "Number of Millennials (Ages 25-34) moving to the city from another\ncounty, state, or country per 100,000")
+#dev.off()
+
+showtext.auto(FALSE)
+```
+
+Read map data
+```{r}
+map_data = read_csv("map data/qp_map_data.csv")
+map_data$mpi = -1*map_data$mpi
+
+map_jc = readOGR("map data/JC Tracts", layer = "JC Tracts",
+                 GDAL1_integer64_policy = TRUE)
+
+map_jc@data<-full_join(map_jc@data, map_data, by = c('GEO_ID' = 'Id'))
+
+map_jc@data$tract_num <- substr(map_jc@data$Id2, 6, 11)
+
+map_jc@data$l_line1 <- paste("Tract #:", map_jc@data$tract_num, "in the")
+map_jc@data$l_line2 <- paste(map_jc@data$Neighborhood, "neighborhood")
+```
+
+Plot and save maps
+```{r}
+setwd("Images/Maps/qp_maps")
+
+m <- make_map("mpi", "MPI", legend_title = "MPI", map_style = "Divergent", units = "none")
+saveWidget(m, "qp_mpi_map.html")
+
+m <- make_map("pct_white", "White Population", legend_title = "White<br/>Population<br/>")
+saveWidget(m, "qp_pct_white_map.html")
+
+m <- make_map("median_income", "Median Household Income", map_style = "divergent", 
+              legend_title = "Median<br/>Household<br/>Income",
+              units = "Dollars")
+saveWidget(m, "qp_median_income_map.html")
+
+# m <- make_map("dif_score", "Percent Difference from City Average")
+# saveWidget(m, "qp_dif_score_map.html")
+
+```

@@ -1,0 +1,548 @@
+---
+title: "County Health Rankings"
+output: html_notebook
+---
+  
+This is an analysis of the Robert Wood Johnson Foundation County Health Rankings.
+
+Setting the working directory
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "~/Desktop/glp_website")
+```
+
+Loading libraries
+```{r libraries, message = FALSE}
+library(tidyverse)
+library(magrittr)
+```
+
+Helper Functions
+
+pull_all_peers adds variables to a dataframe of cities indicating whether a city was an original peer (baseline) and whether a city is a current peer (current) for data frames where the FIPS code is a string.
+
+pull_peers_FIPS adds variables to a dataframe of cities indicating whether a city was an original peer (baseline) and whether a city is a current peer (current) for data frames where the FIPS code is numeric.
+
+norm_z normalizes a vector to return the standard deviations of its contents.
+
+cbp_read reads a folder of csv files into R, subsets it to peer cities based on FIPS code, and returns a data frame.
+
+acs_time reads an ACS download into R, subsets based on peer city FIPS, and returns a data frame.
+
+```{r}
+pull_all_peers <- function(data){
+  data = data %>% filter(data$FIPS == "01073" |data$FIPS == "37119"
+                         |data$FIPS == "39061" |data$FIPS == "39049"
+                         |data$FIPS == "26081" |data$FIPS == "37081"
+                         |data$FIPS == "45045" |data$FIPS == "18097"
+                         |data$FIPS == "29095" |data$FIPS == "47093"
+                         |data$FIPS == "21111" |data$FIPS == "47157"
+                         |data$FIPS == "47037" |data$FIPS == "40109"
+                         |data$FIPS == "31055" |data$FIPS == "29189"
+                         |data$FIPS == "29510"
+                         |data$FIPS == "40143" |data$FIPS == "39113"
+                         |data$FIPS == "12031" |data$FIPS == "37183"
+                         |data$FIPS == "37183" |data$FIPS == "51760")
+  
+  data$baseline <- 1
+  data$current <- 1
+  data$baseline[data$FIPS == "26081"|data$FIPS == "29189"
+                |data$FIPS =="29510"|data$FIPS == "40109"
+                |data$FIPS == "40143"|data$FIPS=="45045"
+                |data$FIPS == "47093"] <- 0
+  data$current[data$FIPS== "12031"|data$FIPS=="37183"|
+                 data$FIPS=="39113"|data$FIPS=="51760"] <- 0
+  data
+}
+
+pull_peers_FIPS <- function(dat){
+  all.peers <- subset(dat, dat$FIPS == 1073 | dat$FIPS == 37119
+                      |dat$FIPS == 39061 |dat$FIPS == 39049
+                      |dat$FIPS == 26081 |dat$FIPS == 37081
+                      |dat$FIPS == 45045 |dat$FIPS == 18097
+                      |dat$FIPS == 29095 |dat$FIPS == 47093
+                      |dat$FIPS == 21111 |dat$FIPS == 47157
+                      |dat$FIPS == 47037 |dat$FIPS == 40109
+                      |dat$FIPS == 31055 |dat$FIPS == 29189
+                      |dat$FIPS == 29510 |dat$FIPS == 40143
+                      |dat$FIPS == 12031 |dat$FIPS == 37183
+                      |dat$FIPS == 39113 |dat$FIPS == 51760
+                      | dat$FIPS == "01073")
+  all.peers$baseline <- 1
+  all.peers$current <- 1
+  all.peers$baseline[all.peers$FIPS==26081|all.peers$FIPS==29189
+                     |all.peers$FIPS==29510|all.peers$FIPS==40109
+                     |all.peers$FIPS==40143|all.peers$FIPS==45045
+                     |all.peers$FIPS==47093]<-0
+  all.peers$current[all.peers$FIPS== 12031|all.peers$FIPS==37183|
+                      all.peers$FIPS==39113|all.peers$FIPS==51760]<-0
+  all.peers
+}
+
+norm_z <- function(x){
+z <- (x - mean(x))/sd(x)
+}
+
+cbp_read<-function(folder, starting_year){
+  initial_wd <- getwd()
+  directory <- paste(initial_wd, folder, sep = "/")
+  file_names<-list.files(directory)
+  n <- length(file_names)
+  y <- starting_year
+  for(i in 1:n){
+    data<-read_csv(paste(directory,file_names[i], sep = "/"), skip = 0, progress = FALSE)
+    data%<>%mutate(FIPS = paste(fipstate, fipscty, sep = ''))
+    all.peers <- filter(data, data$FIPS == "01073" |data$FIPS == 37119
+                        |data$FIPS == 39061 |data$FIPS == 39049
+                        |data$FIPS == 26081 |data$FIPS == 37081
+                        |data$FIPS == 45045 |data$FIPS == 18097
+                        |data$FIPS == 29095 |data$FIPS == 47093
+                        |data$FIPS == 21111 |data$FIPS == 47157
+                        |data$FIPS == 47037 |data$FIPS == 40109
+                        |data$FIPS == 31055 |data$FIPS == 29189
+                        |data$FIPS == 29510
+                        |data$FIPS == 40143 |data$FIPS == 39113
+                        |data$FIPS == 12031 |data$FIPS == 37183
+                        |data$FIPS == 37183 |data$FIPS == 51760)
+    all.peers$year <- y
+    all.peers$baseline <- 1
+    all.peers$current <- 1
+    all.peers$baseline[all.peers$FIPS==26081|all.peers$FIPS==29189
+                       |all.peers$FIPS==29510|all.peers$FIPS==40109
+                       |all.peers$FIPS==40143|all.peers$FIPS==45045
+                       |all.peers$FIPS==47093]<-0
+    all.peers$current[all.peers$FIPS== 12031|all.peers$FIPS==37183|
+                        all.peers$FIPS==39113|all.peers$FIPS==51760]<-0
+    y<-y+1
+    
+    if(i == 1){
+      df <- all.peers
+    }
+    else{
+      names(all.peers)<-names(df)
+      df<-rbind(df, all.peers)
+    }
+  }
+  df
+}
+
+acs_time <- function(folder, starting.year=2005){
+  wd <- getwd()
+  directory <- paste(wd, folder, sep = "")
+  file_names <- list.files(directory)
+  n<-length(file_names)
+  y<-starting.year
+  for (i in 1:n){
+    file_path <- paste(wd, folder, file_names[i], sep = "")
+    data<-read_csv(file_path,col_names = TRUE, skip=1)
+    names(data)[names(data) == 'Id2'] <- 'FIPS'
+    all.peers <-subset(data, data$FIPS == "01073" |data$FIPS == 37119
+                       |data$FIPS == 39061 |data$FIPS == 39049
+                       |data$FIPS == 26081 |data$FIPS == 37081
+                       |data$FIPS == 45045 |data$FIPS == 18097
+                       |data$FIPS == 29095 |data$FIPS == 47093
+                       |data$FIPS == 21111 |data$FIPS == 47157
+                       |data$FIPS == 47037 |data$FIPS == 40109
+                       |data$FIPS == 31055 |data$FIPS == 29189
+                       |data$FIPS == 29510 |data$FIPS == 40143
+                       |data$FIPS == 39113 |data$FIPS == 12031 
+                       |data$FIPS == 37183 |data$FIPS == 51760)
+  
+    all.peers$year<-y
+    y<-y+1
+    
+    if(i==1){
+     df<-all.peers 
+    }
+    else{
+      names(all.peers)<-names(df)
+      df<-rbind(df, all.peers)
+    }
+  }
+  df
+}
+```
+
+Read in data, subset to peers, label variables, and convert percents from values between 0 and 1 to 0-100.
+
+```{r data}
+#read in two columns causing errors as numerics
+chr_df_17 = read_csv("input data/health_input_data/2017CHR_CSV_Analytic_Data.csv",
+                      col_types = cols(
+                        measure_127_value = col_character(),
+                        measure_131_value = col_character()
+                      )
+                    )
+
+chr_df_17 = chr_df_17 %>% rename(FIPS = fipscode) #renaming a variable for use in the function below
+
+chr_df_17 <- pull_all_peers(chr_df_17)
+
+chr_df_17 <- chr_df_17 %>%
+  select(
+    premature_death = measure_1_value,
+    poor_or_fair_health = measure_2_value,
+    poor_physical_health_days = measure_36_value,
+    poor_mental_health_days = measure_42_value,
+    low_birthweight = measure_37_value,
+    adult_smoking = measure_9_value,
+    adult_obesity = measure_11_value,
+    food_environment_index = measure_133_value,
+    physical_inactivity = measure_70_value,
+    access_to_exercise_opportunities = measure_132_value,
+    excessive_drinking = measure_49_value,
+    alcohol_impaired_driving_deaths = measure_134_value,
+    sexually_transmitted_infections = measure_45_value,
+    teen_births = measure_14_value,
+    uninsured = measure_85_value,
+    primary_care_physicians = measure_4_value,
+    dentists = measure_88_value,
+    mental_health_providers = measure_62_value,
+    preventable_hospital_stays = measure_5_value,
+    diabetes_monitoring = measure_7_value,
+    mammography_screening = measure_50_value,
+    high_school_graduation = measure_21_value,
+    some_college = measure_69_value,
+    unemployment = measure_23_value,
+    children_in_poverty = measure_24_value,
+    income_inequality = measure_44_value,
+    children_in_single_parent_households = measure_82_value,
+    social_associations = measure_140_value,
+    violent_crime = measure_43_value,
+    injury_deaths = measure_135_value,
+    air_pollution = measure_125_value,
+    severe_housing_problems = measure_136_value,
+    driving_alone_to_work = measure_67_value,
+    long_commute = measure_137_value,
+    drinking_water = measure_124_value,
+    FIPS,
+    current,
+    baseline
+  )
+
+chr_df_17 %<>% mutate(
+    poor_or_fair_health = poor_or_fair_health*100,
+    low_birthweight = low_birthweight*100,
+    adult_smoking = adult_smoking*100,
+    adult_obesity = adult_obesity*100,
+    physical_inactivity = physical_inactivity*100,
+    access_to_exercise_opportunities = access_to_exercise_opportunities*100,
+    excessive_drinking = excessive_drinking*100,
+    alcohol_impaired_driving_deaths = alcohol_impaired_driving_deaths*100,
+    uninsured = uninsured*100,
+    diabetes_monitoring = diabetes_monitoring*100,
+    mammography_screening = mammography_screening*100,
+    severe_housing_problems = severe_housing_problems*100,
+    driving_alone_to_work = driving_alone_to_work*100,
+    long_commute = long_commute*100,
+    FIPS,
+    current,
+    baseline
+)
+
+```
+
+Subsets data to current peers and adds St. Louis weighted county.
+
+```{r}
+
+chr_df_17 <- chr_df_17 %>% filter(current == 1)
+
+name_df <- read_csv("input data/FIPS two stl.csv", col_types = cols(FIPS = col_character()))
+name_df$FIPS[name_df$FIPS == "1073"] <- "01073"
+
+chr_named <- left_join(chr_df_17, name_df, by = "FIPS")
+
+chr_named$FIPS = as.numeric(chr_named$FIPS)
+
+chr_stl = chr_named %>%
+  select(-county, -state) %>%
+  group_by(city) %>%
+  summarise_each(funs(weighted.mean(.,weights)), -weights)
+
+# give St. Louis Merged a new FIPS
+chr_stl$FIPS <- as.character(chr_stl$FIPS)
+chr_stl$FIPS[chr_stl$city == "St. Louis"] <- "MERGED"
+
+# and then add the other stuff for each city again
+name_df <- read_csv("input data/FIPS one stl.csv")
+name_df <- name_df %>% select(-city) #avoiding duplication
+
+chr_named <- left_join(chr_stl, name_df, by = c("FIPS", "current", "baseline"))
+
+```
+
+Replaces raw variable values with z-scores.
+
+Lower scores indicate healthier behaviors, except for the following list, the weights of which are multiplied by -1 for consistency. 
+*Food environment index
+*Access to exercise opportunities
+*Diabetic Monitoring
+*Mammography Screening
+*High School Graduation
+*Some college
+*Social associations
+
+Calculates rankings for the four sets of health factors (social and economic, behavior, clinical care, physical environment) and for overall health outcomes based on weighted averages based on the weights used in the County Health Rankings & Roadmaps program.
+
+The factor weights add up to one for health outcomes and for the four health factors as a group. Note that each health factor does not contribute equally to the total factor rankings.
+
+Drinking water quality was excluded due to missing data, and its weight was attributed to air quality.
+```{r}
+
+chr_z <- chr_named
+
+chr_z[,2:35] <- apply(chr_z[,2:35], 2, norm_z)
+
+chr_z <- chr_z %>%
+  mutate(
+    outcomes = 
+      premature_death*.5+
+      poor_or_fair_health*.1+
+      poor_physical_health_days*.1+
+      poor_mental_health_days*.1+
+      low_birthweight*.1,
+    
+    health_behaviors = 
+      adult_smoking*.1+
+      adult_obesity*.05+
+      food_environment_index*-.02+
+      physical_inactivity*.02+
+      access_to_exercise_opportunities*-.01+
+      excessive_drinking*.025+
+      alcohol_impaired_driving_deaths*.025+
+      sexually_transmitted_infections*.025+
+      teen_births*.025,
+    
+    clinical_care = 
+      uninsured*.05+
+      primary_care_physicians*.03+
+      dentists*.01+
+      mental_health_providers*.01+
+      preventable_hospital_stays*.05+
+      diabetes_monitoring*-.025+
+      mammography_screening*.025,
+    
+    social_and_economic = 
+      high_school_graduation*-.05+
+      some_college*-.05+
+      unemployment*.10+
+      children_in_poverty*.075+
+      income_inequality*.025+
+      children_in_single_parent_households*.025+
+      social_associations*-.025+
+      violent_crime*.025+
+      injury_deaths*.025,
+    
+    physical_environment = 
+      air_pollution*.025 +
+      severe_housing_problems*.02 +
+      driving_alone_to_work * .02 +
+      long_commute * .01,
+    
+    factors = health_behaviors+clinical_care+social_and_economic+physical_environment
+  )
+```
+
+Multiplies factor outcomes by -1 so that higher scores indicate better health, appends factor scores to 'chr_named' creating data frame 'health_data_fips'
+
+```{r}
+
+rev_index <- function(x){x * -1}
+
+chr_z[ ,43:48] <- apply(chr_z[ ,43:48], 2, rev_index)
+
+factors <- chr_z[,43:48]
+
+health_data_fips = bind_cols(chr_named, factors)
+health_data_fips$year = 2017
+
+```
+
+Reads in social associatoins data from Quality of Place folder and appends it to the data frame 'health_data_fips'
+
+```{r}
+sc_data_5_6 <- cbp_read("input data/qp_input_data/Social Support 5_6", starting_year = 2005)
+sc_data_5_6 %<>% select(naics, FIPS, year, baseline, current, est)
+
+sc_data_7_14 <- cbp_read("input data/qp_input_data/Social Support 7_14", starting_year = 2007)
+sc_data_7_14 %<>% select(naics, FIPS, year, baseline, current, est)
+
+sc_data_15 <- read_csv("input data/qp_input_data/cbp15co.txt.zip", progress = FALSE)
+sc_data_15$year = 2015
+sc_data_15%<>%mutate(FIPS = paste(FIPSTATE, FIPSCTY, sep = ''))%>%
+  pull_peers_FIPS(.)%>%
+  select(naics = NAICS, FIPS, year, baseline, current, est = EST)
+
+sc_data<-bind_rows(sc_data_5_6, sc_data_7_14)
+sc_data<-bind_rows(sc_data, sc_data_15)
+
+
+sc_data_no<-sc_data%>%filter(naics == 813410 | naics == 713950|
+                               naics == 713910 | naics == 713940|
+                               naics == 711211 | naics == 813110|
+                               naics == 813940 | naics == 813930|
+                               naics == 813910 | naics == 813920)%>%
+  filter(!(FIPS == 29189 | FIPS == 29510))%>%
+  group_by(year, FIPS, baseline, current)%>%
+  summarize(ss_est = sum(est))
+
+stl_sc<-sc_data%>%filter(naics == 813410 | naics == 713950|
+                           naics == 713910 | naics == 713940|
+                           naics == 711211 | naics == 813110|
+                           naics == 813940 | naics == 813930|
+                           naics == 813910 | naics == 813920)%>%
+  filter(FIPS == 29189 | FIPS == 29510)%>%
+  group_by(year, baseline, current)%>%
+  summarize(ss_est = sum(est))
+stl_sc$FIPS <- NA
+stl_sc$FIPS <- "MERGED"
+
+sc_data <- bind_rows(sc_data_no, stl_sc)
+sc_data$FIPS[sc_data$FIPS == "01073"] = "1073"
+
+pop <- read_csv("input data/population_data_one_stl.csv")
+sc_data <- left_join(sc_data, pop, by = c("FIPS", "year"))
+
+sc_data %<>% mutate(ss_est_per_10000 = (ss_est/population)*10000)
+name_df <- read_csv("input data/FIPS one stl.csv")
+name_df %<>% select(FIPS, city)
+sc_data <- left_join(sc_data, name_df)
+
+
+health_data_fips <- full_join(sc_data, health_data_fips, by = c("FIPS", "year", "baseline","city","current"))
+
+```
+
+Reads in GeoFRED Commute Time Data Analysis, adds variable to 'health_data_fips'
+```{r}
+commute_time_dat <- read_csv("input data/health_input_data/mean_commuting_time.csv", skip = 1, progress = FALSE)
+
+commute_time_dat <- commute_time_dat %>% rename(FIPS = `Region Code`)
+commute_time_dat <- pull_peers_FIPS(commute_time_dat)
+
+commute_time_dat <- commute_time_dat %>%
+  gather(4:10, key = "year", value = "commute_time") #4:10 refers to column indexes for all the years
+
+fred_dat <- commute_time_dat
+fred_dat <- pull_peers_FIPS(fred_dat)
+
+fred_dat <- fred_dat %>% select(FIPS, year, baseline, current, 
+                                commute_time)
+fred_dat$FIPS[fred_dat$FIPS == "01073"] = 1073
+
+fred_dat$year <- as.numeric(fred_dat$year)
+
+names <- read_csv("input data/FIPS two stl.csv", col_types = cols(FIPS = col_integer()), progress = FALSE)
+names$FIPS <- as.character(names$FIPS)
+data_named <- left_join(fred_dat, names, by = "FIPS")
+
+##and merge St. Louis city and St. Louis county
+
+data_named$FIPS <- as.numeric(data_named$FIPS)
+dat <- data_named %>%
+  filter(year > 2004 & year < 2016) %>%
+  pull_peers_FIPS(.)%>%
+  select(-county, -state) %>%
+  group_by(city, year) %>%
+  summarise_each(funs(weighted.mean(.,weights))) %>%
+  ungroup()
+
+# give St. Louis Merged a new FIPS
+dat$FIPS <- as.character(dat$FIPS)
+dat$FIPS[dat$city == "St. Louis"] <- "MERGED"
+dat$FIPS <- as.factor(dat$FIPS)
+
+
+population_one_stl<-read_csv("input data/population_data_one_stl.csv", progress = FALSE)
+population_one_stl$FIPS <- as.character(population_one_stl$FIPS)
+fred_dat <- left_join(dat, population_one_stl, by = c("FIPS", "year"))
+
+
+fred_dat <- fred_dat %>%
+  select(-c(weights, baseline, current, population,city))
+
+health_data_fips<-left_join(health_data_fips, fred_dat, by = c("FIPS","year"))
+```
+
+Reads in ACS child poverty data and appends to 'health_data_fips'
+```{r}
+data = acs_time("/input data/health_input_data/B17001/")
+
+data = data %>%
+  mutate(
+    under_5_per = 
+    (`Estimate; Income in the past 12 months below poverty level: - Male: - Under 5 years` +
+     `Estimate; Income in the past 12 months below poverty level: - Female: - Under 5 years`) 
+    /
+    (`Estimate; Income in the past 12 months at or above poverty level: - Male: - Under 5 years` +
+     `Estimate; Income in the past 12 months at or above poverty level: - Female: - Under 5 years` +
+     `Estimate; Income in the past 12 months below poverty level: - Male: - Under 5 years` +
+     `Estimate; Income in the past 12 months below poverty level: - Female: - Under 5 years`),
+    
+    five_to_17_under = 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 5 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 6 to 11 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 12 to 14 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 15 years` +
+       `Estimate; Income in the past 12 months below poverty level: - Male: - 16 and 17 years` +
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 5 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 6 to 11 years` +
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 12 to 14 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 15 years` + 
+       `Estimate; Income in the past 12 months below poverty level: - Female: - 16 and 17 years`,
+  
+    five_to_17_over = 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 5 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 6 to 11 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 12 to 14 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 15 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - 16 and 17 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 5 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 6 to 11 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 12 to 14 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 15 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - 16 and 17 years`,
+  
+    five_to_17_per = five_to_17_under / (five_to_17_over + five_to_17_under),
+  
+    child_under = 
+      five_to_17_under +
+      `Estimate; Income in the past 12 months below poverty level: - Male: - Under 5 years` + 
+      `Estimate; Income in the past 12 months below poverty level: - Female: - Under 5 years`,
+  
+    child_over = 
+      five_to_17_over + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Female: - Under 5 years` + 
+      `Estimate; Income in the past 12 months at or above poverty level: - Male: - Under 5 years`,
+  
+    child_total = child_under + child_over,
+    child_per = child_under / (child_total)
+  )
+
+child_pov_data = data %>%
+  select(FIPS, year, child_per, child_total)
+  child_pov_data$FIPS[child_pov_data$FIPS == "01073"] = "1073"
+
+child_pov_stl <- child_pov_data %>%
+  filter(FIPS == 29189 | FIPS == 29510) %>%
+  select(-FIPS) %>%
+  group_by(year) %>%
+  summarise_each(funs(weighted.mean(.,child_total)), -child_total) %>%
+  ungroup()
+
+child_pov_stl$FIPS <- "MERGED"
+  
+child_pov_data <- child_pov_data %>%
+  filter(!(FIPS == 29189 | FIPS == 29510)) %>%
+  bind_rows(child_pov_stl) %>%
+  mutate(child_per = child_per *100)%>%
+  select(-child_total)
+
+health_data_fips %<>% left_join(child_pov_data, by = c("FIPS", "year"))
+```
+
+Writes 'health_data_fips' to a CSV
+```{r}
+write_csv(health_data_fips, "output data/health_data_fips.csv")
+```

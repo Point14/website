@@ -1,0 +1,476 @@
+---
+title: "health_graphing"
+output: html_notebook
+---
+
+Code for the graphs appearing in the health section of the GLP website.
+
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "C:/Users/Harrison Kirby/Desktop/GLP/glp_website")
+```
+
+Load libraries
+```{r libraries, message = FALSE}
+library(showtext)
+library(classInt)
+library(ggthemes)
+library(reshape2)
+library(tidyverse)
+```
+
+Create new directories
+```{r}
+if(!dir.exists("Images")){
+  dir.create("Images")
+}
+if(!dir.exists("Images/Health_Images")){
+  dir.create("Images/Health_Images")
+}
+```
+
+Load graphing functions and fonts
+```{r rankings}
+source("graphing_functions.R")
+
+font.add("Museo Sans 300", "C:/Users/Harrison Kirby/Desktop/GLP/MuseoSans_300.otf")
+font.add("Museo Sans Italic", "C:/Users/Harrison Kirby/Desktop/GLP/MuseoSans_300_Italic.otf")
+```
+
+Read data
+```{r data, message = FALSE}
+health_data_fips= read_csv("output data/health_data_fips.csv")
+```
+
+Ranking graphs
+```{r, message = FALSE}
+setwd("Images/Health_Images")
+
+showtext.auto()
+
+jpeg("health_outcomes_premature_death.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "premature_death", 
+                  order = "Ascending",
+                  sigfig = 4, 
+                  num_dec = 0,
+                  plot_title = "Premature Death",
+                  y_title = "Age-adjusted years of potential life lost rate per 100,000",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_outcomes_poor_or_fair_health.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "poor_or_fair_health", 
+                  order = "Ascending",
+                  plot_title = "Population Reporting Poor or Fair Health",
+                  y_title = "Percent",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_outcomes_poor_physical_health_days.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "poor_physical_health_days", 
+                  order = "Ascending", 
+                  sigfig = 2,
+                  plot_title = "Days of Poor Physical Health per Month",
+                  y_title = "Days",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_outcomes_poor_mental_health_days.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "poor_mental_health_days", 
+                  order = "Ascending", 
+                  sigfig = 2,
+                  plot_title = "Days of Poor Mental Health per Month",
+                  y_title = "Days",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_outcomes_low_birthweight.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "low_birthweight",
+                  order = "Ascending", 
+                  sigfig = 2,
+                  y_title = "Percent of Births Where the Infant Weighed Less than 2,500 grams",
+                  plot_title = "Low Birthweight",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_adult_smoking.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "adult_smoking", 
+                  order = "Ascending",
+                  plot_title = "Smoking", 
+                  y_title = "Percent of Adults who Smoke Every Day or Most Days",
+                  caption_text = "Source: Greater Louisville Project
+                                  nData from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_adult_obesity.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "adult_obesity",
+                  order = "Ascending",
+                  y_title = "Percent of Adult Population (20 and Older) with a BMI greater than or equal to 30",
+                  plot_title = "Adult Obesity", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_food_environment_index.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "food_environment_index",
+                  order = "Descending",
+                  plot_title = "Food Environment Index", 
+                  y_title = "Index constructed on a 0-10 scale",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_physical_inactivity.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "physical_inactivity",
+                  order = "Ascending",
+                  plot_title = "Physical Inactivity", 
+                  y_title = "Percent reporting no leisure time physical activity",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_access_to_exercise_opportunities.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "access_to_exercise_opportunities",
+                  order = "Descending",
+                  y_title = "Percent of Individuals Living Close to a Location for Physical Activity",
+                  plot_title = "Access to Exercise Opportunities", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_excessive_drinking.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "excessive_drinking",
+                  order = "Ascending",
+                  y_title = "Percent of Adults Reporting Binge or Heavy Drinking in Past 30 Days",
+                  plot_title = "Excessive Drinking", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_alcohol_impaired_driving_deaths.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "alcohol_impaired_driving_deaths", 
+                  order = "Ascending",
+                  y_title = "Percent of Motor Vehichle Crash Deaths with Alcohol Involvement",
+                  plot_title = "Alcohol Impaired Driving Deaths", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_sexually_transmitted_infections.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "sexually_transmitted_infections",
+                  sigfig = 3, 
+                  num_dec = 1, 
+                  order = "Ascending",
+                  plot_title = "Sexually Transmitted Infections", 
+                  y_title = "Chlamydia per 100,000",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_behaviors_teen_births.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "teen_births", 
+                  order = "Ascending",
+                  plot_title = "Teen Births",
+                  y_title = "Per 100,000 females aged 15-19",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_uninsured.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "uninsured", 
+                  order = "Ascending",
+                  plot_title = "Uninsured", 
+                  y_title = "Percent of population under 65 without health insurance",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_primary_care_physicians.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "primary_care_physicians", 
+                  order = "Descending", 
+                  sigfig = 3, 
+                  num_dec = 0,
+                  plot_title = "Primary Care Physicians", 
+                  y_title = "Per 100,000",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_dentists.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "dentists", 
+                  order = "Descending", 
+                  sigfig = 2, 
+                  num_dec = 0L,
+                  plot_title = "Dentists", 
+                  y_title = "Per 100,000",
+                  caption_text = "Source: Greater Louisville Project
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_mental_health_providers.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "mental_health_providers",
+                  order = "Descending", 
+                  sigfig = 3, 
+                  num_dec = 0L,
+                  plot_title = "Mental Health Providers",
+                  y_title = "Per 100,000",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_preventable_hospital_stays.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "preventable_hospital_stays", 
+                  order = "Ascending",
+                  plot_title = "Preventable Hospital Stays", 
+                  y_title = "'Discharges for Ambulatory Care Sensitive Conditions per 1,000 Medicare Enrollees",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_diabetes_monitoring.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "diabetes_monitoring", 
+                  order = "Descending",
+                  plot_title = "Diabetes Monitoring", 
+                  y_title = "Percentage of diabetic Medicare enrollees receiving HbA1c test",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_cc_mammography_screening.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "mammography_screening",
+                  order = "Descending",
+                  plot_title = "Mammography Screening", 
+                  y_title = "Percentage of female Medicare enrollees having at least 1 mammogram in 2 yrs (age 67-69)",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_sec_social_associations.jpg", 900, 600, res = 100)
+
+rank_and_nb_group(filter(health_data_fips, year == 2015), 
+                  "ss_est_per_10000",
+                  order = "Descending", 
+                  num_dec = 1,
+                  plot_title = "Social Support, 2015", 
+                  y_title = "Membership Associations per 10,000 population",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from CBP Statistics from US Census")
+dev.off()
+
+jpeg("health_sec_violent_crime.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "violent_crime", 
+                  order = "Ascending", 
+                  sigfig = 3, 
+                  num_dec = 0,
+                  plot_title = "Violent Crime", 
+                  y_title = "Violent Crimes per 100,000",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_sec_injury_deaths.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "injury_deaths",
+                  order = "Ascending",
+                  plot_title = "Injury Deaths", 
+                  y_title = "Injury Mortality Rate per 100,000",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_pe_air_pollution.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "air_pollution", 
+                  order = "Ascending",
+                  plot_title = "Air Pollution", 
+                  y_title = "Average daily amount of fine particulate matter in micrograms per cubic meter",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_pe_severe_housing_problems.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "severe_housing_problems", 
+                  order = "Ascending",
+                  plot_title = "Severe Housing Problems", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_pe_severe_housing_problems.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "severe_housing_problems",
+                  order = "Ascending",
+                  plot_title = "Severe Housing Problems", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_pe_driving_alone_to_work.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "driving_alone_to_work", 
+                  order = "Ascending",
+                  y_title = "Percent of Workforce that Usually Drives Alone to Work",
+                  plot_title = "Driving Alone to Work", 
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Robert Wood Johnson Foundation 2017 County Health Rankings")
+dev.off()
+
+jpeg("health_pe_commute_time_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2015), 
+                  "commute_time", 
+                  order = "Ascending",
+                  plot_title = "Commute Time, 2015",
+                  y_title = "Commute Time (minutes)",
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from the Federal Reserve via GeoFRED")
+dev.off()
+
+jpeg("health_outcomes_overall.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "outcomes",
+                  plot_title = "Health Outcomes, 2017", 
+                  y_title = "Average Peer City", 
+                  text = FALSE, 
+                  h_line = TRUE,
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from Robert Wood Johnson Foundation")
+dev.off()
+
+jpeg("health_behaviors_overall.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "health_behaviors",
+                  plot_title = "Health Behaviors, 2017",
+                  y_title = "Average Peer City", 
+                  text = FALSE,
+                  h_line = TRUE,
+                  caption_text = "Source: Greater Louisville Project \n Data from Robert Wood Johnson Foundation")
+dev.off()
+
+jpeg("health_cc_overall.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "clinical_care", 
+                  plot_title = "Clinical Care, 2017", 
+                  y_title = "Average Peer City", 
+                  text = FALSE, 
+                  h_line = TRUE,
+                  caption_text = "Source: Greater Louisville Project
+                                  Data from Robert Wood Johnson Foundation"                  )
+dev.off()
+
+jpeg("health_sec_overall.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "social_and_economic", 
+                  plot_title = "Social and Economic Health Factors, 2017",
+                  y_title = "Average Peer City", 
+                  text = FALSE,
+                  h_line = TRUE,
+                  caption_text = "Source: Greater Louisville Project
+                                  Data from Robert Wood Johnson Foundation")
+dev.off()
+
+jpeg("health_pe_overall.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017),
+                  "physical_environment", 
+                  plot_title = "Physical Environment, 2017",
+                  y_title = "Average Peer City", 
+                  text = FALSE,
+                  h_line = TRUE,    
+                  caption_text = "Source: Greater Louisville Project 
+                                  Data from Robert Wood Johnson Foundation")
+dev.off()
+
+jpeg("health_factors_overall.jpg", 900, 600, res = 100)
+rank_and_nb_group(filter(health_data_fips, year == 2017), 
+                  "factors", 
+                  plot_title = "Combined Health Factors, 2017", 
+                  y_title = "Average Peer City", 
+                  text = FALSE,
+                  h_line = TRUE,
+                  caption_text = "Source: Greater Louisville Project
+                                  Data from Robert Wood Johnson Foundation")
+dev.off()
+
+jpeg("health_sec_child_poverty_rankings.jpg", 900, 600, res = 100)
+rank_and_nb_group(health_data_fips %>% filter(year == 2015), 
+                  "child_per", 
+                  plot_title = "Child Poverty, 2015", 
+                  y_title = "Percent", 
+                  order = "Ascending", 
+                  caption_text = "Source: Greater Louisville Project
+                                  Data from American Community Survey Table B17001")
+dev.off()
+
+showtext.auto(FALSE)
+```
+
+Trendline graphs
+```{r}
+setwd("Images/Health_Images")
+
+jpeg("health_social_support_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(health_data_fips),
+  var = 'ss_est_per_10000',
+  rollmean = 1,
+  plot_title = "Social Support",
+  y_title = "Membership Associations per 10,000 residents",
+  xmin = 2005,
+  xmax = 2015,
+  caption_text = "Source: Greater Louisville Project 
+                  Data from CBP Statistics from US Census")
+dev.off()
+
+jpeg("health_pe_commute_time_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(health_data_fips),
+  var = 'commute_time',
+  rollmean = 1,
+  plot_title = "Commute Time",
+  y_title = "Commute Time (minutes)",
+  xmin = 2009,
+  xmax = 2015,
+  caption_text = "Source: Greater Louisville Project 
+                  Data from the Federal Reserve via GeoFRED")
+dev.off()
+
+jpeg("health_sec_child_poverty_trendline.jpg", 900, 600, res = 100)
+graph_trendline(
+  as.data.frame(health_data_fips),
+  var = 'child_per',
+  rollmean = 3,
+  plot_title = "Child Poverty",
+  y_title = "Percent",
+  xmin = 2005,
+  xmax = 2015,
+  caption_text = "Source: Greater Louisville Project 
+                  Data from American Community Survey Table B17001")
+dev.off()
+```

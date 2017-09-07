@@ -1,0 +1,328 @@
+MSA,msa_title,county,state,FIPS,year,baseline,current,msa_changed
+13820,"Birmingham-Hoover, AL",Bibb County,Alabama,1007,2003,1,1,0
+13820,"Birmingham-Hoover, AL",Blount County,Alabama,1009,2003,1,1,0
+13820,"Birmingham-Hoover, AL",Chilton County,Alabama,1021,2003,1,1,0
+13820,"Birmingham-Hoover, AL",Jefferson County,Alabama,1073,2003,1,1,0
+13820,"Birmingham-Hoover, AL",St. Clair County,Alabama,1115,2003,1,1,0
+13820,"Birmingham-Hoover, AL",Shelby County,Alabama,1117,2003,1,1,0
+13820,"Birmingham-Hoover, AL",Walker County,Alabama,1127,2003,1,1,0
+16740,"Charlotte-Gastonia-Concord, NC-SC",Anson County,North Carolina,37007,2003,1,1,1
+16740,"Charlotte-Gastonia-Concord, NC-SC",Cabarrus County,North Carolina,37025,2003,1,1,1
+16740,"Charlotte-Gastonia-Concord, NC-SC",Gaston County,North Carolina,37071,2003,1,1,1
+16740,"Charlotte-Gastonia-Concord, NC-SC",Mecklenburg County,North Carolina,37119,2003,1,1,1
+16740,"Charlotte-Gastonia-Concord, NC-SC",Union County,North Carolina,37179,2003,1,1,1
+16740,"Charlotte-Gastonia-Concord, NC-SC",York County,South Carolina,45091,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Dearborn County,Indiana,18029,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Franklin County,Indiana,18047,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Ohio County,Indiana,18115,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Boone County,Kentucky,21015,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Bracken County,Kentucky,21023,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Campbell County,Kentucky,21037,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Gallatin County,Kentucky,21077,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Grant County,Kentucky,21081,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Kenton County,Kentucky,21117,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Pendleton County,Kentucky,21191,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Brown County,Ohio,39015,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Butler County,Ohio,39017,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Clermont County,Ohio,39025,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Hamilton County,Ohio,39061,2003,1,1,1
+17140,"Cincinnati-Middletown, OH-KY-IN",Warren County,Ohio,39165,2003,1,1,1
+18140,"Columbus, OH",Delaware County,Ohio,39041,2003,1,1,1
+18140,"Columbus, OH",Fairfield County,Ohio,39045,2003,1,1,1
+18140,"Columbus, OH",Franklin County,Ohio,39049,2003,1,1,1
+18140,"Columbus, OH",Licking County,Ohio,39089,2003,1,1,1
+18140,"Columbus, OH",Madison County,Ohio,39097,2003,1,1,1
+18140,"Columbus, OH",Morrow County,Ohio,39117,2003,1,1,1
+18140,"Columbus, OH",Pickaway County,Ohio,39129,2003,1,1,1
+18140,"Columbus, OH",Union County,Ohio,39159,2003,1,1,1
+19380,"Dayton, OH",Greene County,Ohio,39057,2003,1,0,1
+19380,"Dayton, OH",Miami County,Ohio,39109,2003,1,0,1
+19380,"Dayton, OH",Montgomery County,Ohio,39113,2003,1,0,1
+19380,"Dayton, OH",Preble County,Ohio,39135,2003,1,0,1
+24340,"Grand Rapids-Wyoming, MI",Barry County,Michigan,26015,2003,0,1,1
+24340,"Grand Rapids-Wyoming, MI",Ionia County,Michigan,26067,2003,0,1,1
+24340,"Grand Rapids-Wyoming, MI",Kent County,Michigan,26081,2003,0,1,1
+24340,"Grand Rapids-Wyoming, MI",Newaygo County,Michigan,26123,2003,0,1,1
+24660,"Greensboro-High Point, NC",Guilford County,North Carolina,37081,2003,1,1,0
+24660,"Greensboro-High Point, NC",Randolph County,North Carolina,37151,2003,1,1,0
+24660,"Greensboro-High Point, NC",Rockingham County,North Carolina,37157,2003,1,1,0
+24860,"Greenville, SC",Greenville County,South Carolina,45045,2003,0,1,1
+24860,"Greenville, SC",Laurens County,South Carolina,45059,2003,0,1,1
+24860,"Greenville, SC",Pickens County,South Carolina,45077,2003,0,1,1
+26900,"Indianapolis, IN",Boone County,Indiana,18011,2003,1,1,1
+26900,"Indianapolis, IN",Brown County,Indiana,18013,2003,1,1,1
+26900,"Indianapolis, IN",Hamilton County,Indiana,18057,2003,1,1,1
+26900,"Indianapolis, IN",Hancock County,Indiana,18059,2003,1,1,1
+26900,"Indianapolis, IN",Hendricks County,Indiana,18063,2003,1,1,1
+26900,"Indianapolis, IN",Johnson County,Indiana,18081,2003,1,1,1
+26900,"Indianapolis, IN",Marion County,Indiana,18097,2003,1,1,1
+26900,"Indianapolis, IN",Morgan County,Indiana,18109,2003,1,1,1
+26900,"Indianapolis, IN",Putnam County,Indiana,18133,2003,1,1,1
+26900,"Indianapolis, IN",Shelby County,Indiana,18145,2003,1,1,1
+27260,"Jacksonville, FL",Baker County,Florida,12003,2003,1,0,0
+27260,"Jacksonville, FL",Clay County,Florida,12019,2003,1,0,0
+27260,"Jacksonville, FL",Duval County,Florida,12031,2003,1,0,0
+27260,"Jacksonville, FL",Nassau County,Florida,12089,2003,1,0,0
+27260,"Jacksonville, FL",St. Johns County,Florida,12109,2003,1,0,0
+28140,"Kansas City, MO-KS",Franklin County,Kansas,20059,2003,1,1,1
+28140,"Kansas City, MO-KS",Johnson County,Kansas,20091,2003,1,1,1
+28140,"Kansas City, MO-KS",Leavenworth County,Kansas,20103,2003,1,1,1
+28140,"Kansas City, MO-KS",Linn County,Kansas,20107,2003,1,1,1
+28140,"Kansas City, MO-KS",Miami County,Kansas,20121,2003,1,1,1
+28140,"Kansas City, MO-KS",Wyandotte County,Kansas,20209,2003,1,1,1
+28140,"Kansas City, MO-KS",Bates County,Missouri,29013,2003,1,1,1
+28140,"Kansas City, MO-KS",Caldwell County,Missouri,29025,2003,1,1,1
+28140,"Kansas City, MO-KS",Cass County,Missouri,29037,2003,1,1,1
+28140,"Kansas City, MO-KS",Clay County,Missouri,29047,2003,1,1,1
+28140,"Kansas City, MO-KS",Clinton County,Missouri,29049,2003,1,1,1
+28140,"Kansas City, MO-KS",Jackson County,Missouri,29095,2003,1,1,1
+28140,"Kansas City, MO-KS",Lafayette County,Missouri,29107,2003,1,1,1
+28140,"Kansas City, MO-KS",Platte County,Missouri,29165,2003,1,1,1
+28140,"Kansas City, MO-KS",Ray County,Missouri,29177,2003,1,1,1
+28940,"Knoxville, TN",Anderson County,Tennessee,47001,2003,0,1,1
+28940,"Knoxville, TN",Blount County,Tennessee,47009,2003,0,1,1
+28940,"Knoxville, TN",Knox County,Tennessee,47093,2003,0,1,1
+28940,"Knoxville, TN",Loudon County,Tennessee,47105,2003,0,1,1
+28940,"Knoxville, TN",Union County,Tennessee,47173,2003,0,1,1
+31140,"Louisville, KY-IN",Clark County,Indiana,18019,2003,1,1,1
+31140,"Louisville, KY-IN",Floyd County,Indiana,18043,2003,1,1,1
+31140,"Louisville, KY-IN",Harrison County,Indiana,18061,2003,1,1,1
+31140,"Louisville, KY-IN",Washington County,Indiana,18175,2003,1,1,1
+31140,"Louisville, KY-IN",Bullitt County,Kentucky,21029,2003,1,1,1
+31140,"Louisville, KY-IN",Henry County,Kentucky,21103,2003,1,1,1
+31140,"Louisville, KY-IN",Jefferson County,Kentucky,21111,2003,1,1,1
+31140,"Louisville, KY-IN",Meade County,Kentucky,21163,2003,1,1,1
+31140,"Louisville, KY-IN",Nelson County,Kentucky,21179,2003,1,1,1
+31140,"Louisville, KY-IN",Oldham County,Kentucky,21185,2003,1,1,1
+31140,"Louisville, KY-IN",Shelby County,Kentucky,21211,2003,1,1,1
+31140,"Louisville, KY-IN",Spencer County,Kentucky,21215,2003,1,1,1
+31140,"Louisville, KY-IN",Trimble County,Kentucky,21223,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Crittenden County,Arkansas,5035,2003,1,1,1
+32820,"Memphis, TN-MS-AR",DeSoto County,Mississippi,28033,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Marshall County,Mississippi,28093,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Tate County,Mississippi,28137,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Tunica County,Mississippi,28143,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Fayette County,Tennessee,47047,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Shelby County,Tennessee,47157,2003,1,1,1
+32820,"Memphis, TN-MS-AR",Tipton County,Tennessee,47167,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Cannon County,Tennessee,47015,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Cheatham County,Tennessee,47021,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Davidson County,Tennessee,47037,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Dickson County,Tennessee,47043,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Hickman County,Tennessee,47081,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Macon County,Tennessee,47111,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Robertson County,Tennessee,47147,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Rutherford County,Tennessee,47149,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Smith County,Tennessee,47159,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Sumner County,Tennessee,47165,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Trousdale County,Tennessee,47169,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Williamson County,Tennessee,47187,2003,1,1,1
+34980,"Nashville-Davidson--Murfreesboro, TN",Wilson County,Tennessee,47189,2003,1,1,1
+36420,"Oklahoma City, OK",Canadian County,Oklahoma,40017,2003,0,1,0
+36420,"Oklahoma City, OK",Cleveland County,Oklahoma,40027,2003,0,1,0
+36420,"Oklahoma City, OK",Grady County,Oklahoma,40051,2003,0,1,0
+36420,"Oklahoma City, OK",Lincoln County,Oklahoma,40081,2003,0,1,0
+36420,"Oklahoma City, OK",Logan County,Oklahoma,40083,2003,0,1,0
+36420,"Oklahoma City, OK",McClain County,Oklahoma,40087,2003,0,1,0
+36420,"Oklahoma City, OK",Oklahoma County,Oklahoma,40109,2003,0,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Harrison County,Iowa,19085,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Mills County,Iowa,19129,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Pottawattamie County,Iowa,19155,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Cass County,Nebraska,31025,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Douglas County,Nebraska,31055,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Sarpy County,Nebraska,31153,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Saunders County,Nebraska,31155,2003,1,1,0
+36540,"Omaha-Council Bluffs, NE-IA",Washington County,Nebraska,31177,2003,1,1,0
+39580,"Raleigh-Cary, NC",Franklin County,North Carolina,37069,2003,1,0,0
+39580,"Raleigh-Cary, NC",Johnston County,North Carolina,37101,2003,1,0,0
+39580,"Raleigh-Cary, NC",Wake County,North Carolina,37183,2003,1,0,0
+40060,"Richmond, VA",Amelia County,Virginia,51007,2003,1,0,1
+40060,"Richmond, VA",Caroline County,Virginia,51033,2003,1,0,1
+40060,"Richmond, VA",Charles City County,Virginia,51036,2003,1,0,1
+40060,"Richmond, VA",Chesterfield County,Virginia,51041,2003,1,0,1
+40060,"Richmond, VA",Cumberland County,Virginia,51049,2003,1,0,1
+40060,"Richmond, VA",Dinwiddie County,Virginia,51053,2003,1,0,1
+40060,"Richmond, VA",Goochland County,Virginia,51075,2003,1,0,1
+40060,"Richmond, VA",Hanover County,Virginia,51085,2003,1,0,1
+40060,"Richmond, VA",Henrico County,Virginia,51087,2003,1,0,1
+40060,"Richmond, VA",King and Queen County,Virginia,51097,2003,1,0,1
+40060,"Richmond, VA",King William County,Virginia,51101,2003,1,0,1
+40060,"Richmond, VA",Louisa County,Virginia,51109,2003,1,0,1
+40060,"Richmond, VA",New Kent County,Virginia,51127,2003,1,0,1
+40060,"Richmond, VA",Powhatan County,Virginia,51145,2003,1,0,1
+40060,"Richmond, VA",Prince George County,Virginia,51149,2003,1,0,1
+40060,"Richmond, VA",Sussex County,Virginia,51183,2003,1,0,1
+40060,"Richmond, VA",Colonial Heights city,Virginia,51570,2003,1,0,1
+40060,"Richmond, VA",Hopewell city,Virginia,51670,2003,1,0,1
+40060,"Richmond, VA",Petersburg city,Virginia,51730,2003,1,0,1
+40060,"Richmond, VA",Richmond city,Virginia,51760,2003,1,0,1
+41180,"St. Louis, MO-IL",Bond County,Illinois,17005,2003,0,1,1
+41180,"St. Louis, MO-IL",Calhoun County,Illinois,17013,2003,0,1,1
+41180,"St. Louis, MO-IL",Clinton County,Illinois,17027,2003,0,1,1
+41180,"St. Louis, MO-IL",Jersey County,Illinois,17083,2003,0,1,1
+41180,"St. Louis, MO-IL",Macoupin County,Illinois,17117,2003,0,1,1
+41180,"St. Louis, MO-IL",Madison County,Illinois,17119,2003,0,1,1
+41180,"St. Louis, MO-IL",Monroe County,Illinois,17133,2003,0,1,1
+41180,"St. Louis, MO-IL",St. Clair County,Illinois,17163,2003,0,1,1
+41180,"St. Louis, MO-IL",Franklin County,Missouri,29071,2003,0,1,1
+41180,"St. Louis, MO-IL",Jefferson County,Missouri,29099,2003,0,1,1
+41180,"St. Louis, MO-IL",Lincoln County,Missouri,29113,2003,0,1,1
+41180,"St. Louis, MO-IL",St. Charles County,Missouri,29183,2003,0,1,1
+41180,"St. Louis, MO-IL",St. Louis County,Missouri,29189,2003,0,1,1
+41180,"St. Louis, MO-IL",Warren County,Missouri,29219,2003,0,1,1
+41180,"St. Louis, MO-IL",Washington County,Missouri,29221,2003,0,1,1
+41180,"St. Louis, MO-IL",St. Louis city,Missouri,29510,2003,0,1,1
+46140,"Tulsa, OK",Creek County,Oklahoma,40037,2003,0,1,0
+46140,"Tulsa, OK",Okmulgee County,Oklahoma,40111,2003,0,1,0
+46140,"Tulsa, OK",Osage County,Oklahoma,40113,2003,0,1,0
+46140,"Tulsa, OK",Pawnee County,Oklahoma,40117,2003,0,1,0
+46140,"Tulsa, OK",Rogers County,Oklahoma,40131,2003,0,1,0
+46140,"Tulsa, OK",Tulsa County,Oklahoma,40143,2003,0,1,0
+46140,"Tulsa, OK",Wagoner County,Oklahoma,40145,2003,0,1,0
+16740,"Charlotte-Concord-Gastonia, NC-SC",Cabarrus County,North Carolina,37025,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Gaston County,North Carolina,37071,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Iredell County,North Carolina,37097,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Lincoln County,North Carolina,37109,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Mecklenburg County,North Carolina,37119,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Rowan County,North Carolina,37159,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Union County,North Carolina,37179,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Chester County,South Carolina,45023,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",Lancaster County,South Carolina,45057,2013,1,1,1
+16740,"Charlotte-Concord-Gastonia, NC-SC",York County,South Carolina,45091,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Dearborn County,Indiana,18029,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Ohio County,Indiana,18115,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Union County,Indiana,18161,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Boone County,Kentucky,21015,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Bracken County,Kentucky,21023,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Campbell County,Kentucky,21037,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Gallatin County,Kentucky,21077,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Grant County,Kentucky,21081,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Kenton County,Kentucky,21117,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Pendleton County,Kentucky,21191,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Brown County,Ohio,39015,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Butler County,Ohio,39017,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Clermont County,Ohio,39025,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Hamilton County,Ohio,39061,2013,1,1,1
+17140,"Cincinnati, OH-KY-IN",Warren County,Ohio,39165,2013,1,1,1
+18140,"Columbus, OH",Delaware County,Ohio,39041,2013,1,1,1
+18140,"Columbus, OH",Fairfield County,Ohio,39045,2013,1,1,1
+18140,"Columbus, OH",Franklin County,Ohio,39049,2013,1,1,1
+18140,"Columbus, OH",Hocking County,Ohio,39073,2013,1,1,1
+18140,"Columbus, OH",Licking County,Ohio,39089,2013,1,1,1
+18140,"Columbus, OH",Madison County,Ohio,39097,2013,1,1,1
+18140,"Columbus, OH",Morrow County,Ohio,39117,2013,1,1,1
+18140,"Columbus, OH",Perry County,Ohio,39127,2013,1,1,1
+18140,"Columbus, OH",Pickaway County,Ohio,39129,2013,1,1,1
+18140,"Columbus, OH",Union County,Ohio,39159,2013,1,1,1
+19380,"Dayton, OH",Greene County,Ohio,39057,2013,1,0,1
+19380,"Dayton, OH",Miami County,Ohio,39109,2013,1,0,1
+19380,"Dayton, OH",Montgomery County,Ohio,39113,2013,1,0,1
+24340,"Grand Rapids-Wyoming, MI",Barry County,Michigan,26015,2013,0,1,1
+24340,"Grand Rapids-Wyoming, MI",Kent County,Michigan,26081,2013,0,1,1
+24340,"Grand Rapids-Wyoming, MI",Montcalm County,Michigan,26117,2013,0,1,1
+24340,"Grand Rapids-Wyoming, MI",Ottawa County,Michigan,26139,2013,0,1,1
+24860,"Greenville-Anderson-Mauldin, SC",Anderson County,South Carolina,45007,2013,0,1,1
+24860,"Greenville-Anderson-Mauldin, SC",Greenville County,South Carolina,45045,2013,0,1,1
+24860,"Greenville-Anderson-Mauldin, SC",Laurens County,South Carolina,45059,2013,0,1,1
+24860,"Greenville-Anderson-Mauldin, SC",Pickens County,South Carolina,45077,2013,0,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Boone County,Indiana,18011,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Brown County,Indiana,18013,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Hamilton County,Indiana,18057,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Hancock County,Indiana,18059,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Hendricks County,Indiana,18063,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Johnson County,Indiana,18081,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Madison County,Indiana,18095,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Marion County,Indiana,18097,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Morgan County,Indiana,18109,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Putnam County,Indiana,18133,2013,1,1,1
+26900,"Indianapolis-Carmel-Anderson, IN",Shelby County,Indiana,18145,2013,1,1,1
+28140,"Kansas City, MO-KS",Johnson County,Kansas,20091,2013,1,1,1
+28140,"Kansas City, MO-KS",Leavenworth County,Kansas,20103,2013,1,1,1
+28140,"Kansas City, MO-KS",Linn County,Kansas,20107,2013,1,1,1
+28140,"Kansas City, MO-KS",Miami County,Kansas,20121,2013,1,1,1
+28140,"Kansas City, MO-KS",Wyandotte County,Kansas,20209,2013,1,1,1
+28140,"Kansas City, MO-KS",Bates County,Missouri,29013,2013,1,1,1
+28140,"Kansas City, MO-KS",Caldwell County,Missouri,29025,2013,1,1,1
+28140,"Kansas City, MO-KS",Cass County,Missouri,29037,2013,1,1,1
+28140,"Kansas City, MO-KS",Clay County,Missouri,29047,2013,1,1,1
+28140,"Kansas City, MO-KS",Clinton County,Missouri,29049,2013,1,1,1
+28140,"Kansas City, MO-KS",Jackson County,Missouri,29095,2013,1,1,1
+28140,"Kansas City, MO-KS",Lafayette County,Missouri,29107,2013,1,1,1
+28140,"Kansas City, MO-KS",Platte County,Missouri,29165,2013,1,1,1
+28140,"Kansas City, MO-KS",Ray County,Missouri,29177,2013,1,1,1
+28940,"Knoxville, TN",Anderson County,Tennessee,47001,2013,0,1,1
+28940,"Knoxville, TN",Blount County,Tennessee,47009,2013,0,1,1
+28940,"Knoxville, TN",Campbell County,Tennessee,47013,2013,0,1,1
+28940,"Knoxville, TN",Grainger County,Tennessee,47057,2013,0,1,1
+28940,"Knoxville, TN",Knox County,Tennessee,47093,2013,0,1,1
+28940,"Knoxville, TN",Loudon County,Tennessee,47105,2013,0,1,1
+28940,"Knoxville, TN",Morgan County,Tennessee,47129,2013,0,1,1
+28940,"Knoxville, TN",Roane County,Tennessee,47145,2013,0,1,1
+28940,"Knoxville, TN",Union County,Tennessee,47173,2013,0,1,1
+31140,"Louisville/Jefferson County, KY-IN",Clark County,Indiana,18019,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Floyd County,Indiana,18043,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Harrison County,Indiana,18061,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Scott County,Indiana,18143,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Washington County,Indiana,18175,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Bullitt County,Kentucky,21029,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Henry County,Kentucky,21103,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Jefferson County,Kentucky,21111,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Oldham County,Kentucky,21185,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Shelby County,Kentucky,21211,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Spencer County,Kentucky,21215,2013,1,1,1
+31140,"Louisville/Jefferson County, KY-IN",Trimble County,Kentucky,21223,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Crittenden County,Arkansas,5035,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Benton County,Mississippi,28009,2013,1,1,1
+32820,"Memphis, TN-MS-AR",DeSoto County,Mississippi,28033,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Marshall County,Mississippi,28093,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Tate County,Mississippi,28137,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Tunica County,Mississippi,28143,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Fayette County,Tennessee,47047,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Shelby County,Tennessee,47157,2013,1,1,1
+32820,"Memphis, TN-MS-AR",Tipton County,Tennessee,47167,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Cannon County,Tennessee,47015,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Cheatham County,Tennessee,47021,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Davidson County,Tennessee,47037,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Dickson County,Tennessee,47043,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Hickman County,Tennessee,47081,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Macon County,Tennessee,47111,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Maury County,Tennessee,47119,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Robertson County,Tennessee,47147,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Rutherford County,Tennessee,47149,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Smith County,Tennessee,47159,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Sumner County,Tennessee,47165,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Trousdale County,Tennessee,47169,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Williamson County,Tennessee,47187,2013,1,1,1
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",Wilson County,Tennessee,47189,2013,1,1,1
+40060,"Richmond, VA",Amelia County,Virginia,51007,2013,1,0,1
+40060,"Richmond, VA",Caroline County,Virginia,51033,2013,1,0,1
+40060,"Richmond, VA",Charles City County,Virginia,51036,2013,1,0,1
+40060,"Richmond, VA",Chesterfield County,Virginia,51041,2013,1,0,1
+40060,"Richmond, VA",Dinwiddie County,Virginia,51053,2013,1,0,1
+40060,"Richmond, VA",Goochland County,Virginia,51075,2013,1,0,1
+40060,"Richmond, VA",Hanover County,Virginia,51085,2013,1,0,1
+40060,"Richmond, VA",Henrico County,Virginia,51087,2013,1,0,1
+40060,"Richmond, VA",King William County,Virginia,51101,2013,1,0,1
+40060,"Richmond, VA",New Kent County,Virginia,51127,2013,1,0,1
+40060,"Richmond, VA",Powhatan County,Virginia,51145,2013,1,0,1
+40060,"Richmond, VA",Prince George County,Virginia,51149,2013,1,0,1
+40060,"Richmond, VA",Sussex County,Virginia,51183,2013,1,0,1
+40060,"Richmond, VA",Colonial Heights city,Virginia,51570,2013,1,0,1
+40060,"Richmond, VA",Hopewell city,Virginia,51670,2013,1,0,1
+40060,"Richmond, VA",Petersburg city,Virginia,51730,2013,1,0,1
+40060,"Richmond, VA",Richmond city,Virginia,51760,2013,1,0,1
+41180,"St. Louis, MO-IL",Bond County,Illinois,17005,2013,0,1,1
+41180,"St. Louis, MO-IL",Calhoun County,Illinois,17013,2013,0,1,1
+41180,"St. Louis, MO-IL",Clinton County,Illinois,17027,2013,0,1,1
+41180,"St. Louis, MO-IL",Jersey County,Illinois,17083,2013,0,1,1
+41180,"St. Louis, MO-IL",Macoupin County,Illinois,17117,2013,0,1,1
+41180,"St. Louis, MO-IL",Madison County,Illinois,17119,2013,0,1,1
+41180,"St. Louis, MO-IL",Monroe County,Illinois,17133,2013,0,1,1
+41180,"St. Louis, MO-IL",St. Clair County,Illinois,17163,2013,0,1,1
+41180,"St. Louis, MO-IL",Franklin County,Missouri,29071,2013,0,1,1
+41180,"St. Louis, MO-IL",Jefferson County,Missouri,29099,2013,0,1,1
+41180,"St. Louis, MO-IL",Lincoln County,Missouri,29113,2013,0,1,1
+41180,"St. Louis, MO-IL",St. Charles County,Missouri,29183,2013,0,1,1
+41180,"St. Louis, MO-IL",St. Louis County,Missouri,29189,2013,0,1,1
+41180,"St. Louis, MO-IL",Warren County,Missouri,29219,2013,0,1,1
+41180,"St. Louis, MO-IL",St. Louis city,Missouri,29510,2013,0,1,1

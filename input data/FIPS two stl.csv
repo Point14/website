@@ -1,0 +1,23 @@
+city,county,state,FIPS,weights
+Birmingham,Jefferson,AL,1073,1
+Jacksonville,Duval,FL,12031,1
+Indianapolis,Marion,IN,18097,1
+Louisville,Jefferson,KY,21111,1
+Grand Rapids,Kent,MI,26081,1
+Kansas City,Jackson,MO,29095,1
+St. Louis,St. Louis County,MO,29189,0.76
+St. Louis,St. Louis City,MO,29510,0.24
+Omaha,Douglas,NE,31055,1
+Greensboro,Guilford,NC,37081,1
+Charlotte,Mecklenberg,NC,37119,1
+Raleigh,Wake,NC,37183,1
+Columbus,Franklin,OH,39049,1
+Cincinnati,Hamilton,OH,39061,1
+Dayton,Montgomery,OH,39113,1
+Oklahoma City,Oklahoma,OK,40109,1
+Tulsa,Tulsa,OK,40143,1
+Greenville,Greenville,SC,45045,1
+Nashville,Davidson,TN,47037,1
+Knoxville,Knox,TN,47093,1
+Memphis,Shelby,TN,47157,1
+Richmond,Richmond City,VA,51760,1
